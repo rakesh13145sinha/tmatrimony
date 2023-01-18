@@ -96,6 +96,7 @@ class Person(models.Model):
 	status=models.BooleanField(default=True)
 	block=models.BooleanField(default=False)
 	verify=models.BooleanField(default=False)
+	resion=models.CharField(max_length=100,null=True,blank=True)
 	
 #only admin perpose
 	active_plan=models.CharField(max_length=100,null=True,choices=USER_PLAN,blank=True,default="Waiting")
