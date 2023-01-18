@@ -1221,7 +1221,7 @@ class HomeTabs(APIView):
         _q=request.GET['q'].strip()
         _list=['matches','new','premium','mutual','saw','viewed',
                'location','horoscope','qualification','star','occupation',
-               'workplace'    
+               'workplace' ,"resion","community"   
                              ]
         response={}
         if _q not in _list:
@@ -1283,6 +1283,12 @@ class HomeTabs(APIView):
                 |
                 ~Q(qualification=person.qualification)
                 )
+        elif _q=="resion":
+            query=query & Q(resion=person.resion)
+                
+                
+        elif _q=="community":
+            query=query & Q(caste=person.caste)
        
         persons=Person.objects.filter(query).order_by('-id')
         serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
