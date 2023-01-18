@@ -30,7 +30,7 @@ def generate_matrimonyid():
     length=len(clients)
     #client=client.latest("id")
     # print(client.id)
-    if length > 2:
+    if length >= 2:
     
         new_matrimonyid="DM"+str(int(clients[length-2].matrimony_id[2:])+1)
         print(new_matrimonyid)
