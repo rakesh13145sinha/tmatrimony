@@ -681,7 +681,7 @@ def profile_match_percentage(request):
 """HOW MUCH PROFILE UPDATED IN PERCENTAGE"""       
 class ProfileUpdatePercentage(APIView):
     def get(self,request):
-        import json
+        
         matrimonyid=request.GET['matrimony_id']
         change_into_dict = Person.objects.filter(matrimony_id=matrimonyid).values()[0]
         
@@ -784,7 +784,7 @@ class NeedToUpdateFields(APIView):
         profile=Person.objects.get(matrimony_id=matrimonyid)
         
         _list=['horoscope',"habbits",'workplace','star',
-               "total_family_members",'college' ,"annual_income"]
+               "total_family_members","annual_income"]
         
         
         for info in _list:
