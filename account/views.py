@@ -1368,34 +1368,35 @@ def home_landing_page(request):
     tradition={}
     region={}
     caste={}
-    for obj in treditional_profiles:
-        try:
-            image=obj.profilemultiimage_set.first()
-            print(image)
-            tradition[obj.id]={"image":image.files.url}
-        except Exception as e:
-            pass
+    if len(treditional_profiles)>=5:
+        for obj in treditional_profiles[0:5]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                print(image)
+                tradition[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
+   
        
-        # image=obj.profilemultiimage_set.first()
-        # print(image)
-        # tradition[obj.id]=image.files.url
         
-    for obj in region_profiles:
-        try:
-            image=obj.profilemultiimage_set.first()
-            region[obj.id]={"image":image.files.url}
-        except Exception as e:
-            pass
-    for obj in caste_profiles:
-        try:
-            image=obj.profilemultiimage_set.first()
-            caste[obj.id]={"image":image.files.url}
-        except Exception as e:
-            pass
+    if len(region_profiles)>=4:  
+        for obj in region_profiles[0:4]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                region[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
+    if len(caste_profiles)>=5 :    
+        for obj in caste_profiles[0:4]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                caste[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
     data={
-        "tradition":tradition.values(),
-        "region":region.values(),
-        "community":caste.values()
+        "tradition":tradition.values() if len(treditional_profiles)>=5 else [] ,
+        "region":region.values() if len(treditional_profiles)>=4 else [],
+        "community":caste.values()if len(treditional_profiles)>=4 else []
     }
     return Response(data)       
         
