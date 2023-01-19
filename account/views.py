@@ -383,6 +383,7 @@ class Validate_OTP(APIView):
                 "image":images[0].files.url if images.exists() else None,
                 "status":contactnumber.status,
                 "active_plan":contactnumber.active_plan,
+                
                
                 }
             return Response(response,status=status.HTTP_202_ACCEPTED)
@@ -1237,7 +1238,7 @@ class HomeTabs(APIView):
         _q=request.GET['q'].strip()
         _list=['matches','new','premium','mutual','saw','viewed',
                'location','horoscope','qualification','star','occupation',
-               'workplace' ,"resion","community"   
+               'workplace' ,"region","community"   
                              ]
         response={}
         if _q not in _list:
@@ -1299,8 +1300,8 @@ class HomeTabs(APIView):
                 |
                 ~Q(qualification=person.qualification)
                 )
-        elif _q=="resion":
-            query=query & Q(resion=person.resion)
+        elif _q=="region":
+            query=query & Q(region=person.region)
                 
                 
         elif _q=="community":
