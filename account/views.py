@@ -1301,7 +1301,7 @@ class HomeTabs(APIView):
                 ~Q(qualification=person.qualification)
                 )
         elif _q=="region":
-            query=query & Q(region=person.region)
+            query=query.add(Q(region=person.region)) 
                 
                 
         elif _q=="community":
