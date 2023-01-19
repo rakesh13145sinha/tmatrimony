@@ -1388,8 +1388,8 @@ def home_landing_page(request):
             pass
     data={
         "tradition":tradition.values(),
-        "tradition":region.values(),
-        "tradition":caste.values()
+        "region":region.values(),
+        "community":caste.values()
     }
     return Response(data)       
         
