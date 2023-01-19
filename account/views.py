@@ -1311,7 +1311,94 @@ class HomeTabs(APIView):
         serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
         return Response(serializer.data)
         
+
+@api_view(['GET'])
+def home_landing_page(request):
+    matrimonyid=request.GET['matrimony_id']
+    profile=Person.objects.get(matrimony_id=matrimonyid)
+    query=Q(
+        Q(   ~Q(gender=profile.gender)
+            &
+            Q(status=True)
+        )
+        &
+        Q(
+            Q(physical_status=profile.physical_status)
+            |
+            Q(mother_tongue=profile.mother_tongue)
+            |
+            Q(marital_status=profile.marital_status)
+            |
+            Q(drinking_habbit=profile.drinking_habbit)
+            |
+            Q(smoking_habbit=profile.smoking_habbit)
+            |
+            Q(diet_preference=profile.diet_preference)
+            |
+            Q(caste=profile.caste)
+            |
+            Q(religion=profile.religion)
+            |
+            Q(occupation=profile.occupation)
+            |
+            Q(job_sector=profile.job_sector)
+            |
+            Q(smoking_habbit=profile.smoking_habbit)
+            |
+            Q(city=profile.city)
+            |
+            Q(state=profile.state)
+            |
+            Q(religion=profile.religion)
+            |
+            Q(occupation=profile.occupation)
+            |
+            Q(qualification=profile.qualification)
+
+        ) 
         
+        
+    )
+        
+   
+    treditional_profiles=Person.objects.filter(query).only('id')
+    print(treditional_profiles.query)
+    region_profiles=Person.objects.filter(region=profile.region).only('id')
+    caste_profiles=Person.objects.filter(caste=profile.caste).only('id')
+    tradition={}
+    region={}
+    caste={}
+    for obj in treditional_profiles:
+        try:
+            image=obj.profilemultiimage_set.first()
+            tradition[obj.id]=image.files.urls
+        except Exception as e:
+            pass
+    for obj in region_profiles:
+        try:
+            image=obj.profilemultiimage_set.first()
+            region[obj.id]=image.files.urls
+        except Exception as e:
+            pass
+    for obj in caste_profiles:
+        try:
+            image=obj.profilemultiimage_set.first()
+            caste[obj.id]=image.files.urls
+        except Exception as e:
+            pass
+    data={
+        "tradition":tradition.values(),
+        "tradition":region.values(),
+        "tradition":caste.values()
+    }
+    return Response(data)       
+        
+        
+        
+        
+    
+
+            
         
 
     

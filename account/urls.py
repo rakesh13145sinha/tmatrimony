@@ -44,6 +44,7 @@ urlpatterns = [
     
     path('tab/',HomeTabs.as_view(),name="home tab"),
     path('banner',Banner.as_view()),
+    path('home',home_landing_page,name="landing page")
    
     
 ]

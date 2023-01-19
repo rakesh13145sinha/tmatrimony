@@ -161,6 +161,9 @@ class TabPersonSerializer(serializers.ModelSerializer):
                 'qualification','caste','country',
                 "active_plan","profileimage",'connect_status',"album_status",
                 'profile_created_by','dateofbirth',"active_plan"]
+        
+        
+
 
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
