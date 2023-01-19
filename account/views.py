@@ -1369,27 +1369,27 @@ def home_landing_page(request):
     region={}
     caste={}
     for obj in treditional_profiles:
-        # try:
-        #     image=obj.profilemultiimage_set.first()
-        #     print(image)
-        #     tradition[obj.id]=image.files.urls
-        # except Exception as e:
-        #     pass
+        try:
+            image=obj.profilemultiimage_set.first()
+            print(image)
+            tradition[obj.id]=image.files.urls
+        except Exception as e:
+            pass
        
-        image=obj.profilemultiimage_set.first()
-        print(image)
-        tradition[obj.id]=image.files.urls
+        # image=obj.profilemultiimage_set.first()
+        # print(image)
+        # tradition[obj.id]=image.files.url
         
     for obj in region_profiles:
         try:
             image=obj.profilemultiimage_set.first()
-            region[obj.id]=image.files.urls
+            region[obj.id]=image.files.url
         except Exception as e:
             pass
     for obj in caste_profiles:
         try:
             image=obj.profilemultiimage_set.first()
-            caste[obj.id]=image.files.urls
+            caste[obj.id]=image.files.url
         except Exception as e:
             pass
     data={
