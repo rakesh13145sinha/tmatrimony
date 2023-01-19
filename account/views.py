@@ -1308,7 +1308,7 @@ class HomeTabs(APIView):
             query=query & Q(caste=person.caste)
        
         persons=Person.objects.filter(query).order_by('-id')
-        print(person.query)
+        print(persons.query)
         serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
         return Response(serializer.data)
         
