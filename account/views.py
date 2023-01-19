@@ -784,8 +784,8 @@ class NeedToUpdateFields(APIView):
         
         profile=Person.objects.get(matrimony_id=matrimonyid)
         
-        _list=['horoscope',"habbits",'workplace','star',
-               "total_family_members","annual_income"]
+        _list=["habbits",'star',
+               "annual_income"]
         
         
         for info in _list:
@@ -1308,6 +1308,7 @@ class HomeTabs(APIView):
             query=query & Q(caste=person.caste)
        
         persons=Person.objects.filter(query).order_by('-id')
+        print(person.query)
         serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
         return Response(serializer.data)
         
