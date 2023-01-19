@@ -68,7 +68,7 @@ class Person(models.Model):
 	occupation = models.CharField(max_length=100,null=True)#working as
 	annual_income = models.CharField(max_length=100,null=True)
 	job_sector = models.CharField(max_length=100,null=True)
-	college	= models.CharField(max_length=100,null=True)
+	#college	= models.CharField(max_length=100,null=True)
 	#orgnisation=models.CharField(max_length=255,null=True)
 	qualification	= models.CharField(max_length=100,null=True)
 	degree=models.CharField(max_length=100,null=True)
@@ -96,7 +96,7 @@ class Person(models.Model):
 	status=models.BooleanField(default=True)
 	block=models.BooleanField(default=False)
 	verify=models.BooleanField(default=False)
-	resion=models.CharField(max_length=100,null=True,blank=True)
+	region=models.CharField(max_length=100,null=True,blank=True)
 	
 #only admin perpose
 	active_plan=models.CharField(max_length=100,null=True,choices=USER_PLAN,blank=True,default="Waiting")
