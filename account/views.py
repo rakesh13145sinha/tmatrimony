@@ -710,14 +710,23 @@ class ProfileUpdatePercentage(APIView):
 class DailyRecomandation(APIView):
     def get(self,request):
         matrimonyid=request.GET['matrimony_id']
-        profile=Person.objects.get(matrimony_id=matrimonyid)
+        select_preference=request.GET['preference']
+        try:
+            profile=Person.objects.get(matrimony_id=matrimonyid)
+        except Exception as e:
+            return Response({"message":"Invalid matrimony id","error":str(e)},status=200)
         query=Q(
-           Q(   ~Q(gender=profile.gender)
+                ~Q(gender=profile.gender)
                 &
                 Q(status=True)
+  
             )
-           &
-           Q(
+        if select_preference=="region":
+            query=query& Q(region=profile.region)
+        elif select_preference=="community":
+            query=query& Q(region=profile.caste) 
+        elif select_preference=="tredition":
+            query=query& Q(
                Q(physical_status=profile.physical_status)
                |
                Q(mother_tongue=profile.mother_tongue)
@@ -750,10 +759,10 @@ class DailyRecomandation(APIView):
                |
                Q(qualification=profile.qualification)
 
-           ) 
-           
-            
-        )
+           )  
+        else:
+            return Response({"message":"Enter wrong preference","status":False},status=200)
+        
         
         response={}
         r_profile=Person.objects.filter(query).order_by('-reg_date')
@@ -762,7 +771,7 @@ class DailyRecomandation(APIView):
             response[r_pro.id]={
                 "matrimony_id":r_pro.matrimony_id,
                 "image":images[0].files.url if images.exists() else None,
-                "height":height(r_pro.height),
+                "height":r_pro.height,
                 "dateofbirth":r_pro.dateofbirth,
                 "gender":r_pro.gender,
                 "name":r_pro.name,
@@ -784,9 +793,7 @@ class NeedToUpdateFields(APIView):
         
         profile=Person.objects.get(matrimony_id=matrimonyid)
         
-        _list=['star',
-               "annual_income"]
-        
+        _list=['star',"annual_income"]
         
         for info in _list:
             if getattr(profile,info)=="" or getattr(profile,info) is None :
