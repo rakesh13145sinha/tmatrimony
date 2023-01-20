@@ -1187,8 +1187,13 @@ class PremiumUser(APIView):
             Q(block=False)
              &
             Q(active_plan__in=USER_PLAN)
+           
             )
         response={}
+        if person.preference=="region":
+            query=query & Q(person.preference)
+        if person.preference=="community":
+            query=query & Q(person.preference)
         persons=Person.objects.filter(query).order_by('-reg_date')#[0:12]
         # :
         #     images=
