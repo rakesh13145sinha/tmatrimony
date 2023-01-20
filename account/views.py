@@ -1266,7 +1266,7 @@ class HomeTabs(APIView):
         except Exception as e:
             return Response({"message":"Invalid matrimony id","status":False},status=400)
         
-        query=~Q(gender=person.gender)
+        query=~Q(gender=person.gender)& Q(preference=person.preference)
         if _q=="matches":
             query
         elif _q=="new":
@@ -1381,9 +1381,9 @@ def home_landing_page(request):
         
    
     treditional_profiles=Person.objects.filter(query).only('id')
-    print(treditional_profiles.query)
-    region_profiles=Person.objects.filter(region=profile.region).only('id')
-    caste_profiles=Person.objects.filter(caste=profile.caste).only('id')
+    
+    region_profiles=Person.objects.filter(Q(region=profile.region) & ~Q(gender=profile.gender)).only('id')
+    caste_profiles=Person.objects.filter(Q(caste=profile.caste) & ~Q(gender=profile.gender)).only('id')
     tradition={}
     region={}
     caste={}
@@ -1405,7 +1405,7 @@ def home_landing_page(request):
                 region[obj.id]={"image":image.files.url}
             except Exception as e:
                 pass
-    if len(caste_profiles)>=5 :    
+    if len(caste_profiles)>=4 :    
         for obj in caste_profiles[0:4]:
             try:
                 image=obj.profilemultiimage_set.first()
