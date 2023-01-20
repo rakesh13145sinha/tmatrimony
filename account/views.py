@@ -1277,7 +1277,7 @@ class HomeTabs(APIView):
         query=~Q(gender=person.gender)
         if person.preference=="region":
             query=query & Q(region=person.region)
-        elif person.perference=="community":
+        elif person.preference=="community":
             query=query & Q(caste=person.caste)
             
         
