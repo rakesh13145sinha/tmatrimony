@@ -393,15 +393,15 @@ class Validate_OTP(APIView):
 
 """PREFERACE UPDATE"""
 @api_view(['POST'])
-def update_preferance(request):
+def update_preference(request):
     mid=request.GET['matrimony_id']
     try:
         person=Person.objects.get(matrimony_id=mid)
     except Exception as e:
         return Response({"message":"Invalid matrimony id","error":str(e)},status=200) 
-    person.preferance=request.data['preference']
+    person.preference=request.data['preference']
     person.save()
-    return Response({"message":"preferance post successfully"},status=200)
+    return Response({"message":"preference post successfully"},status=200)
 
 
 """Single Image Post"""
