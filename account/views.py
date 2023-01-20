@@ -391,6 +391,17 @@ class Validate_OTP(APIView):
         else:
             return Response({"message":"Enter wrong otp","status":False},status=status.HTTP_404_NOT_FOUND)
 
+"""PREFERACE UPDATE"""
+@api_view(['POST'])
+def update_preferance(request):
+    mid=request.GET['matrimony_id']
+    try:
+        person=Person.objects.get(matrimony_id=mid)
+    except Exception as e:
+        return Response({"message":"Invalid matrimony id","error":str(e)},status=200) 
+    person.preferance=request.data['preference']
+    person.save()
+    return Response({"message":"preferance post successfully"},status=200)
 
 
 """Single Image Post"""
@@ -710,7 +721,7 @@ class ProfileUpdatePercentage(APIView):
 class DailyRecomandation(APIView):
     def get(self,request):
         matrimonyid=request.GET['matrimony_id']
-        select_preference=request.GET['preference']
+       
         try:
             profile=Person.objects.get(matrimony_id=matrimonyid)
         except Exception as e:
@@ -721,11 +732,11 @@ class DailyRecomandation(APIView):
                 Q(status=True)
   
             )
-        if select_preference=="region":
+        if profile.preferance=="region":
             query=query& Q(region=profile.region)
-        elif select_preference=="community":
+        elif profile.preferance=="community":
             query=query& Q(region=profile.caste) 
-        elif select_preference=="tredition":
+        elif profile.preferance=="tredition":
             query=query& Q(
                Q(physical_status=profile.physical_status)
                |

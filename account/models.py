@@ -105,7 +105,7 @@ class Person(models.Model):
 	plan_expiry_date=models.DateField(null=True,blank=True)
 	reg_date=models.DateTimeField(auto_now=True,auto_now_add=False)
 	reg_update=models.DateTimeField(auto_now=False,auto_now_add=True)
-	
+	preferance=models.CharField(max_length=50,null=True,blank=True)
 
 	class Meta:
 		unique_together = ("phone_number","matrimony_id",'email')
@@ -196,6 +196,10 @@ class Country(models.Model):
 		unique_together = ("name",)
 	def __str__(self):
 		return self.country
+
+
+
+
 
 class State(models.Model):
 
