@@ -510,9 +510,9 @@ class OppositeGenderProfile(APIView):
             Q(block=False)
            
             )
-        if person.preferece=="region":
+        if person.preference=="region":
             query=query & Q(region=person.region)
-        elif person.preferece=="community":
+        elif person.preference=="community":
             query=query & Q(caste=person.caste)
         persons=Person.objects.filter(query).order_by('-reg_date')[0:12]
         
