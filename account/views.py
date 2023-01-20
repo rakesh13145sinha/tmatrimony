@@ -1191,9 +1191,9 @@ class PremiumUser(APIView):
             )
         response={}
         if person.preference=="region":
-            query=query & Q(person.preference)
+            query=query & Q(preference=person.preference)
         elif person.preference=="community":
-            query=query & Q(person.preference)
+            query=query & Q(preference=person.preference)
         persons=Person.objects.filter(query).order_by('-reg_date')#[0:12]
         # :
         #     images=
