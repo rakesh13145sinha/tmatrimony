@@ -784,7 +784,7 @@ class NeedToUpdateFields(APIView):
         
         profile=Person.objects.get(matrimony_id=matrimonyid)
         
-        _list=["habbits",'star',
+        _list=['star',
                "annual_income"]
         
         
