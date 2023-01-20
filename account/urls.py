@@ -17,10 +17,7 @@ urlpatterns = [
     path('new/match',OppositeGenderProfile.as_view()),##
    
     path("profile/",include([ 
-                             
-                             
         path('premium/',PremiumUser.as_view()),###
-    
         path('info/',ProfileInfo.as_view()),
         path('',SingleProfile.as_view()),
         path('complete',ProfileUpdatePercentage.as_view()),

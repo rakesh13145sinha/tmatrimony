@@ -510,7 +510,10 @@ class OppositeGenderProfile(APIView):
             Q(block=False)
            
             )
-        
+        if person.preferece=="region":
+            query=query & Q(region=person.region)
+        elif person.preferece=="community":
+            query=query & Q(caste=person.caste)
         persons=Person.objects.filter(query).order_by('-reg_date')[0:12]
         
        
@@ -1271,7 +1274,13 @@ class HomeTabs(APIView):
         except Exception as e:
             return Response({"message":"Invalid matrimony id","status":False},status=400)
         
-        query=~Q(gender=person.gender)& Q(preference=person.preference)
+        query=~Q(gender=person.gender)
+        if person.preference=="region":
+            query=query & Q(region=person.region)
+        elif person.perference=="community":
+            query=query & Q(caste=person.caste)
+            
+        
         if _q=="matches":
             query
         elif _q=="new":
@@ -1323,15 +1332,15 @@ class HomeTabs(APIView):
                 |
                 ~Q(qualification=person.qualification)
                 )
-        elif _q=="region":
-            query=query & Q(region=person.region)
+        # elif _q=="region":
+        #     query=query & Q(region=person.region)
                 
                 
-        elif _q=="community":
-            query=query & Q(caste=person.caste)
+        # elif _q=="community":
+        #     query=query & Q(caste=person.caste)
        
         persons=Person.objects.filter(query).only('id').order_by('-id')
-        print(persons.query)
+        
         serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
         return Response(serializer.data)
         
