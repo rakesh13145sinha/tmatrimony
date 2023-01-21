@@ -1529,49 +1529,29 @@ def coustom_matches(request):
         response={
         "dateofbirth":True if  int(profile.dateofbirth) in range(int(pp.min_age),int(pp.max_age)) else False,
         "height":True if target_profile_index in range(_index['min_height'],_index['max_height']) else False,
-        'physical_status': True if pp.physical_status=="Any" or  pp.physical_status== profile.physical_status else False,
-        
-        'mother_tongue': True if pp.mother_tongue=="Any" or pp.mother_tongue==profile.mother_tongue else False,
-        "marital_status": True if  pp.marital_status=="Any" or pp.marital_status==profile.marital_status else False,
-        'religion': True if (pp.religion=="Any" or pp.religion==profile.religion) else False,
-        
-        
-        'occupation': True if pp.occupation=="Any" or pp.occupation==profile.occupation else False,
-        "annual_income": True if pp.annual_income=="Any" or pp.annual_income==profile.annual_income else False,
-        'country': True if pp.country=="Any" or pp.country==profile.country else False,
-        
-        
-        "qualification":True if pp.qualification=="Any" or pp.qualification==profile.qualification else False,
+        'physical_status': True if  pp.physical_status== profile.physical_status else False,
+        'mother_tongue': True if pp.mother_tongue==profile.mother_tongue else False,
+        "marital_status": True if  pp.marital_status==profile.marital_status else False,
+        'religion': True if pp.religion==profile.religion else False,
+        'occupation': True if  pp.occupation==profile.occupation else False,
+        "annual_income": True if  pp.annual_income==profile.annual_income else False,
+        'country': True if  pp.country==profile.country else False,
+        "qualification":True if  pp.qualification==profile.qualification else False,
         
         }  
     
-    my_preference={
-        "age_range":pp.min_age+"-"+pp.max_age ,
-        "height_range":pp.min_height+" "+"-"+" "+pp.max_height,
-        "physical_range":pp.physical_status,
-        
-        "mother_tongue_range":pp.mother_tongue,
-        "marital_range":pp.marital_status,
-        "religion_range":pp.religion,
-        
-        "occupation_range":pp.occupation,
-        "annual_income_range":pp.annual_income,
-        "country_range":pp.country,
-        "qualification_range":pp.qualification
         
         
-        }
-    
-    matched_field=sum([1 for value in response.values() if value is True ])
-    not_match_filed=sum([1 for value in response.values() if value is False ])
-    
-    
-    number_of_fields=matched_field+not_match_filed
-    try:
-        updated_code=(matched_field*100)//number_of_fields
-    except ZeroDivisionError:
-        updated_code=0
-    response.update(my_preference)
-    response.update({"percentage":updated_code})
-    
-    return Response(response,status=200)
+        matched_field=sum([1 for value in response.values() if value is True ])
+        not_match_filed=sum([1 for value in response.values() if value is False ])
+        
+        
+        number_of_fields=matched_field+not_match_filed
+        try:
+            updated_code=(matched_field*100)//number_of_fields
+        except ZeroDivisionError:
+            updated_code=0
+       
+        response.update({"percentage":updated_code})
+        
+        return Response(response,status=200)
