@@ -701,7 +701,7 @@ class ProfileUpdatePercentage(APIView):
         change_into_dict = Person.objects.filter(matrimony_id=matrimonyid).values()[0]
         
         _list=['user_id' ,'id','reg_date','reg_update','plan_taken_date','plan_expiry_date' ,
-               'total_access','active_plan','verify' ,'block','gender' ,'phone_number'
+               'total_access','active_plan','verify' ,'block','gender' ,'phone_number',
                'status','matrimony_id','preference']
         for i in _list:
             del change_into_dict[i]
