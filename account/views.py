@@ -1267,7 +1267,7 @@ class HomeTabs(APIView):
                'location','horoscope','qualification','star','occupation',
                'workplace' ,"region","community"   
                              ]
-        response={}
+       
         if _q not in _list:
             return Response({"message":"This is not Valid query","status":False},status=403)
         try:
@@ -1282,7 +1282,7 @@ class HomeTabs(APIView):
             query=query & Q(caste=person.caste)
             
         
-        if _q=="matches":
+        elif _q=="matches":
             query
         elif _q=="new":
             india=pytz.timezone('Asia/Kolkata')
@@ -1332,12 +1332,7 @@ class HomeTabs(APIView):
                 
                 ~Q(qualification=person.qualification)
                 )
-        # elif _q=="region":
-        #     query=query & Q(region=person.region)
-                
-                
-        # elif _q=="community":
-        #     query=query & Q(caste=person.caste)
+        
        
         persons=Person.objects.filter(query).only('id').order_by('-id')
         
