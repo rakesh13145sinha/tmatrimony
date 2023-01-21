@@ -1329,8 +1329,7 @@ class HomeTabs(APIView):
             query=query & Q(horoscope=getattr(person,_q))
         elif _q=="qualification":
             query=query & Q(
-                ~Q(specialization=person.specialization)
-                |
+                
                 ~Q(qualification=person.qualification)
                 )
         # elif _q=="region":
@@ -1374,8 +1373,6 @@ def home_landing_page(request):
             Q(religion=profile.religion)
             |
             Q(occupation=profile.occupation)
-            |
-            Q(job_sector=profile.job_sector)
             |
             Q(smoking_habbit=profile.smoking_habbit)
             |
