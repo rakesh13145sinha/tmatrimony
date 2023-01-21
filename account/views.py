@@ -826,7 +826,7 @@ class NeedToUpdateFields(APIView):
                 }                     
         return Response(response.values())
 
-persons=Person.objects.filter(region__isnull=True).update(region="Telugu region") 
+
 
        
 
