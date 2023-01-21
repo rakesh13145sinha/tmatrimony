@@ -39,7 +39,7 @@ urlpatterns = [
     path('match/daily',DailyRecomandation.as_view()),
     path('explor/',Explore.as_view()),
     
-    
+    path('coustom',coustom_matches),
     path('tab/',HomeTabs.as_view(),name="home tab"),
     path('banner',Banner.as_view()),
     path('home',home_landing_page,name="landing page")

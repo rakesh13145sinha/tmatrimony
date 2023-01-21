@@ -701,7 +701,7 @@ class ProfileUpdatePercentage(APIView):
         change_into_dict = Person.objects.filter(matrimony_id=matrimonyid).values()[0]
         
         _list=['user_id' ,'id','reg_date','reg_update','plan_taken_date','plan_expiry_date' ,
-               'total_access','active_plan','verify' ,'block','gender' ,'phone_number','name' ,
+               'total_access','active_plan','verify' ,'block','gender' ,'phone_number'
                'status','matrimony_id','preference']
         for i in _list:
             del change_into_dict[i]
@@ -712,7 +712,8 @@ class ProfileUpdatePercentage(APIView):
         data={
             "profileimage":images[0].files.url if images.exists() else None,
             "matrimony_id":matrimonyid,
-            "percentage":percentage
+            "percentage":percentage,
+            "name":change_into_dict['name']
         }            
         return Response(data)
         
@@ -1492,3 +1493,85 @@ def get_total_number_request_and_view(request):
     # }  
     return Response(response.values(),status=200)      
     
+    
+    
+
+
+
+@api_view(['GET'])
+def coustom_matches(request):
+    matrimonyid=request.GET['matrimony_id']
+   
+    try:
+        profile=Person.objects.get(matrimony_id=matrimonyid)
+    except Exception as e:
+        return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
+    
+    _height_list=[
+    "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
+    "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
+    "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
+    "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
+    "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+        
+        ]
+    
+    profiles=Person.objects.filter(~Q(gender=profile.gender))
+    for pro in profiles:
+    
+        pp=Partner_Preferences.objects.get(profile=pro)
+    
+        _index={"min_height":_height_list.index(pp.min_height),
+            "max_height":_height_list.index(pp.max_height)}
+    
+        target_profile_index=_height_list.index(profile.height)
+    
+        response={
+        "dateofbirth":True if  int(profile.dateofbirth) in range(int(pp.min_age),int(pp.max_age)) else False,
+        "height":True if target_profile_index in range(_index['min_height'],_index['max_height']) else False,
+        'physical_status': True if pp.physical_status=="Any" or  pp.physical_status== profile.physical_status else False,
+        
+        'mother_tongue': True if pp.mother_tongue=="Any" or pp.mother_tongue==profile.mother_tongue else False,
+        "marital_status": True if  pp.marital_status=="Any" or pp.marital_status==profile.marital_status else False,
+        'religion': True if (pp.religion=="Any" or pp.religion==profile.religion) else False,
+        
+        
+        'occupation': True if pp.occupation=="Any" or pp.occupation==profile.occupation else False,
+        "annual_income": True if pp.annual_income=="Any" or pp.annual_income==profile.annual_income else False,
+        'country': True if pp.country=="Any" or pp.country==profile.country else False,
+        
+        
+        "qualification":True if pp.qualification=="Any" or pp.qualification==profile.qualification else False,
+        
+        }  
+    
+    my_preference={
+        "age_range":pp.min_age+"-"+pp.max_age ,
+        "height_range":pp.min_height+" "+"-"+" "+pp.max_height,
+        "physical_range":pp.physical_status,
+        
+        "mother_tongue_range":pp.mother_tongue,
+        "marital_range":pp.marital_status,
+        "religion_range":pp.religion,
+        
+        "occupation_range":pp.occupation,
+        "annual_income_range":pp.annual_income,
+        "country_range":pp.country,
+        "qualification_range":pp.qualification
+        
+        
+        }
+    
+    matched_field=sum([1 for value in response.values() if value is True ])
+    not_match_filed=sum([1 for value in response.values() if value is False ])
+    
+    
+    number_of_fields=matched_field+not_match_filed
+    try:
+        updated_code=(matched_field*100)//number_of_fields
+    except ZeroDivisionError:
+        updated_code=0
+    response.update(my_preference)
+    response.update({"percentage":updated_code})
+    
+    return Response(response,status=200)
