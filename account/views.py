@@ -1196,12 +1196,11 @@ class PremiumUser(APIView):
             )
         response={}
         if person.preference=="region":
-            query=query & Q(preference=person.preference)
+            query=query & Q(region=person.region)
         elif person.preference=="community":
-            query=query & Q(preference=person.preference)
+            query=query & Q(caste=person.caste)
         persons=Person.objects.filter(query).order_by('-reg_date')#[0:12]
-        # :
-        #     images=
+       
         response=[{
                 "image":person.profilemultiimage_set.latest('id').files.url if person.profilemultiimage_set.all() else None,
                 "matimony_id":person.matrimony_id,
@@ -1210,7 +1209,7 @@ class PremiumUser(APIView):
                 "height":person.height,
                 "active_plan":person.active_plan
                 }for person in persons]
-            # response[person.id].update(height_and_age(person.height,person.dateofbirth))
+            
         return Response(response)
 #only for testing  this post methods
     def post(self,request):
