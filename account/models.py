@@ -34,7 +34,7 @@ class Person(models.Model):
 #physical status
 	height = models.CharField(max_length=100,null=True)
 	physical_status = models.CharField(max_length=100,null=True)
-	weight	= models.CharField(max_length=100,null=True)#no need
+	#weight	= models.CharField(max_length=100,null=True)#no need
 	
 
 #life status
@@ -46,11 +46,11 @@ class Person(models.Model):
 	
 #caster & religious
 	
-	gotram	= models.CharField(max_length=100,null=True)#no need
+	#gotram	= models.CharField(max_length=100,null=True)#no need
 	star	= models.CharField(max_length=100,null=True)
 	rashi = models.CharField(max_length=100,null=True)
 	caste = models.CharField(max_length=100,null=True)
-	sub_caste	= models.CharField(max_length=100,null=True)#no need
+	#sub_caste	= models.CharField(max_length=100,null=True)#no need
 	religion = models.CharField(max_length=100,null=True)
 	#horoscope=models.CharField(max_length=200,null=True)
 	#habbits=models.CharField(max_length=200,null=True)
@@ -67,7 +67,7 @@ class Person(models.Model):
 #profession & education
 	occupation = models.CharField(max_length=100,null=True)#working as
 	annual_income = models.CharField(max_length=100,null=True)
-	job_sector = models.CharField(max_length=100,null=True)
+	#job_sector = models.CharField(max_length=100,null=True)
 	#college	= models.CharField(max_length=100,null=True)
 	#orgnisation=models.CharField(max_length=255,null=True)
 	qualification	= models.CharField(max_length=100,null=True)
@@ -76,7 +76,7 @@ class Person(models.Model):
 	pursuing_degree=models.BooleanField(default=False)#pursuing or finish
 
 #family details
-	total_family_members = models.CharField(max_length=100,null=True)
+	#total_family_members = models.CharField(max_length=100,null=True)
 	father_details = models.CharField(max_length=100,null=True)
 	mother_details = models.CharField(max_length=100,null=True)
 	unmarried_brother=models.IntegerField(null=True)
