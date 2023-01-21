@@ -701,8 +701,8 @@ class ProfileUpdatePercentage(APIView):
         change_into_dict = Person.objects.filter(matrimony_id=matrimonyid).values()[0]
         
         _list=['user_id' ,'id','reg_date','reg_update','plan_taken_date','plan_expiry_date' ,
-               'total_access','active_plan','verify' , 'block',  'gender' ,'phone_number','name' ,
-               'status','matrimony_id']
+               'total_access','active_plan','verify' ,'block','gender' ,'phone_number','name' ,
+               'status','matrimony_id','preference']
         for i in _list:
             del change_into_dict[i]
         count=len( list (filter(lambda x:x!=None,change_into_dict.values())))
@@ -825,7 +825,10 @@ class NeedToUpdateFields(APIView):
                 "about":"Get 90 imes more boostup your profile"
                 }                     
         return Response(response.values())
-    
+
+persons=Person.objects.filter(region__isnull=True).update(region="Telugu region") 
+
+       
 
 
 """Explore"""
