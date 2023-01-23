@@ -514,9 +514,9 @@ class OppositeGenderProfile(APIView):
            
             )
         if person.preference=="region":
-            query=query & Q(region=person.region)
+            query=query & Q(region=person.region,religion=person.religion)
         elif person.preference=="community":
-            query=query & Q(caste=person.caste,region=person.region)
+            query=query & Q(caste=person.caste,religion=person.religion)
         persons=Person.objects.filter(query).order_by('-reg_date')[0:12]
         
        
@@ -554,9 +554,9 @@ class DailyRecomandation(APIView):
   
             )
         if profile.preference=="region":
-            query=query& Q(region=profile.region)
+            query=query& Q(region=profile.region,religion=profile.religion)
         elif profile.preference=="community":
-            query=query& Q(caste=profile.caste,region=profile.region) 
+            query=query& Q(caste=profile.caste,religion=profile.religion) 
         elif profile.preference=="tredition":
             query=query& Q(
                Q(physical_status=profile.physical_status)
@@ -661,6 +661,95 @@ class Explore(APIView):
             }            
         return Response(response.values())
 
+
+@api_view(['GET'])
+def home_landing_page(request):
+    matrimonyid=request.GET['matrimony_id']
+    profile=Person.objects.get(matrimony_id=matrimonyid)
+    query=Q(
+        Q(   ~Q(gender=profile.gender)
+            &
+            Q(status=True)
+        )
+        &
+        Q(
+            Q(physical_status=profile.physical_status)
+            |
+            Q(mother_tongue=profile.mother_tongue)
+            |
+            Q(marital_status=profile.marital_status)
+            |
+            Q(drinking_habbit=profile.drinking_habbit)
+            |
+            Q(smoking_habbit=profile.smoking_habbit)
+            |
+            Q(diet_preference=profile.diet_preference)
+            |
+            Q(caste=profile.caste)
+            |
+            Q(religion=profile.religion)
+            |
+            Q(occupation=profile.occupation)
+            |
+            Q(smoking_habbit=profile.smoking_habbit)
+            |
+            Q(city=profile.city)
+            |
+            Q(state=profile.state)
+            |
+            Q(religion=profile.religion)
+            |
+            Q(occupation=profile.occupation)
+            |
+            Q(qualification=profile.qualification)
+
+        ) 
+        
+        
+    )
+        
+   
+    treditional_profiles=Person.objects.filter(query).only('id')
+    
+    region_profiles=Person.objects.\
+    filter(Q(region=profile.region,religion=profile.religion) & ~Q(gender=profile.gender)).only('id')
+  
+    caste_profiles=Person.objects\
+    .filter(Q(caste=profile.caste,religion=profile.religion) & ~Q(gender=profile.gender)).only('id')
+    tradition={}
+    region={}
+    caste={}
+    if len(treditional_profiles)>=5:
+        for obj in treditional_profiles[0:5]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                print(image)
+                tradition[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
+   
+       
+        
+    if len(region_profiles)>=4:  
+        for obj in region_profiles[0:4]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                region[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
+    if len(caste_profiles)>=4 :    
+        for obj in caste_profiles[0:4]:
+            try:
+                image=obj.profilemultiimage_set.first()
+                caste[obj.id]={"image":image.files.url}
+            except Exception as e:
+                pass
+    data={
+        "tradition":tradition.values() if len(treditional_profiles)>=5 else [] ,
+        "region":region.values() if len(treditional_profiles)>=4 else [],
+        "community":caste.values()if len(treditional_profiles)>=4 else []
+    }
+    return Response(data)       
 
 
 
@@ -1360,94 +1449,6 @@ class HomeTabs(APIView):
         return Response(serializer.data)
         
 
-@api_view(['GET'])
-def home_landing_page(request):
-    matrimonyid=request.GET['matrimony_id']
-    profile=Person.objects.get(matrimony_id=matrimonyid)
-    query=Q(
-        Q(   ~Q(gender=profile.gender)
-            &
-            Q(status=True)
-        )
-        &
-        Q(
-            Q(physical_status=profile.physical_status)
-            |
-            Q(mother_tongue=profile.mother_tongue)
-            |
-            Q(marital_status=profile.marital_status)
-            |
-            Q(drinking_habbit=profile.drinking_habbit)
-            |
-            Q(smoking_habbit=profile.smoking_habbit)
-            |
-            Q(diet_preference=profile.diet_preference)
-            |
-            Q(caste=profile.caste)
-            |
-            Q(religion=profile.religion)
-            |
-            Q(occupation=profile.occupation)
-            |
-            Q(smoking_habbit=profile.smoking_habbit)
-            |
-            Q(city=profile.city)
-            |
-            Q(state=profile.state)
-            |
-            Q(religion=profile.religion)
-            |
-            Q(occupation=profile.occupation)
-            |
-            Q(qualification=profile.qualification)
-
-        ) 
-        
-        
-    )
-        
-   
-    treditional_profiles=Person.objects.filter(query).only('id')
-    
-    region_profiles=Person.objects.\
-    filter(Q(region__iexact=profile.region) & ~Q(gender=profile.gender))
-    print(region_profiles)
-    caste_profiles=Person.objects\
-    .filter(Q(caste=profile.caste,region=profile.region) & ~Q(gender=profile.gender)).only('id')
-    tradition={}
-    region={}
-    caste={}
-    if len(treditional_profiles)>=5:
-        for obj in treditional_profiles[0:5]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                print(image)
-                tradition[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
-   
-       
-        
-    if len(region_profiles)>=4:  
-        for obj in region_profiles[0:4]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                region[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
-    if len(caste_profiles)>=4 :    
-        for obj in caste_profiles[0:4]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                caste[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
-    data={
-        "tradition":tradition.values() if len(treditional_profiles)>=5 else [] ,
-        "region":region.values() if len(treditional_profiles)>=4 else [],
-        "community":caste.values()if len(treditional_profiles)>=4 else []
-    }
-    return Response(data)       
         
  
 """TOTAL VIEW AND TOTAL REQUEST RECEIVE"""
