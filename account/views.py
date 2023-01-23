@@ -1409,8 +1409,11 @@ def home_landing_page(request):
    
     treditional_profiles=Person.objects.filter(query).only('id')
     
-    region_profiles=Person.objects.filter(Q(region=profile.region) & ~Q(gender=profile.gender)).only('id')
-    caste_profiles=Person.objects.filter(Q(caste=profile.caste,region=profile.region) & ~Q(gender=profile.gender)).only('id')
+    region_profiles=Person.objects.\
+    filter(Q(region__iexact=profile.region) & ~Q(gender=profile.gender))
+    print(region_profiles)
+    caste_profiles=Person.objects\
+    .filter(Q(caste=profile.caste,region=profile.region) & ~Q(gender=profile.gender)).only('id')
     tradition={}
     region={}
     caste={}
