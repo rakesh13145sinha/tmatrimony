@@ -740,7 +740,7 @@ class DailyRecomandation(APIView):
         if profile.preference=="region":
             query=query& Q(region=profile.region)
         elif profile.preference=="community":
-            query=query& Q(region=profile.caste) 
+            query=query& Q(region=profile.caste,region=profile.region) 
         elif profile.preference=="tredition":
             query=query& Q(
                Q(physical_status=profile.physical_status)
@@ -1281,7 +1281,7 @@ class HomeTabs(APIView):
         if person.preference=="region":
             query=query & Q(region=person.region)
         elif person.preference=="community":
-            query=query & Q(caste=person.caste)
+            query=query & Q(caste=person.caste,region=person.region)
             
         
         elif _q=="matches":
@@ -1392,7 +1392,7 @@ def home_landing_page(request):
     treditional_profiles=Person.objects.filter(query).only('id')
     
     region_profiles=Person.objects.filter(Q(region=profile.region) & ~Q(gender=profile.gender)).only('id')
-    caste_profiles=Person.objects.filter(Q(caste=profile.caste) & ~Q(gender=profile.gender)).only('id')
+    caste_profiles=Person.objects.filter(Q(caste=profile.caste,region=profile.region) & ~Q(gender=profile.gender)).only('id')
     tradition={}
     region={}
     caste={}
