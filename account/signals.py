@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Person,Partner_Preferences
+from .models import Person,Partner_Preferences,SaveOTP
 from .send_otp import sending_otp
 import random
 from age import *
@@ -47,7 +47,8 @@ def create_profile(sender, instance, created, **kwargs):
         instance.matrimony_id=generate_matrimonyid()
         instance.dateofbirth=get_age(instance.dateofbirth)
         instance.save()
-        sending_otp(random.randint(1000,9999), instance.phone_number)
+        # sending_otp(random.randint(1000,9999), instance.phone_number)
+        SaveOTP.objects.update_or_create(phone_number=instance.phone_number,otp=1234)
         create_partner_preferance(instance.id)
         
 
