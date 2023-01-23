@@ -1406,14 +1406,14 @@ class HomeTabs(APIView):
         elif _q=="saw":
             view_profile=ViewedProfile.objects.filter(profile=person)
             if view_profile.exists():
-                query=Q(id__in= view_profile[0].view.all().values_list('id',flat=True))
+                query=query & Q(id__in= view_profile[0].view.all().values_list('id',flat=True))
             else:
                 return Response([],status=200)
         elif _q=="viewed":
             
             view_profile=ViewedProfile.objects.filter(view__id=person.id)
             #query=Q(id__in=[i.profile.id for i in view_profile])
-            query=Q(id__in=view_profile.values_list('profile__id',flat=True))
+            query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
        
         elif _q=="location":
             query=query & Q(
