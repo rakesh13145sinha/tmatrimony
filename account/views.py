@@ -740,7 +740,7 @@ class DailyRecomandation(APIView):
         if profile.preference=="region":
             query=query& Q(region=profile.region)
         elif profile.preference=="community":
-            query=query& Q(region=profile.caste,region=profile.region) 
+            query=query& Q(caste=profile.caste,region=profile.region) 
         elif profile.preference=="tredition":
             query=query& Q(
                Q(physical_status=profile.physical_status)
