@@ -7,8 +7,8 @@ admin.site.register(SaveOTP)
 admin.site.register(BannerImage)
 admin.site.register(HomeScreenImage)
 class PersonAdmin(admin.ModelAdmin):
-    list_display=['id','matrimony_id','name','phone_number',"region",'preference']
-    list_editable=['region','name']
+    list_display=['matrimony_id','name','religion','phone_number',"region",'preference']
+    list_editable=['region']
     list_filter=['preference','active_plan']
 admin.site.register(Person,PersonAdmin)
 admin.site.register(ProfileMultiImage)
