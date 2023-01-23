@@ -9,6 +9,6 @@ admin.site.register(HomeScreenImage)
 class PersonAdmin(admin.ModelAdmin):
     list_display=['matrimony_id','name','religion','phone_number',"region",'preference']
     list_editable=['region']
-    list_filter=['preference','active_plan']
+    list_filter=['preference','active_plan','religion']
 admin.site.register(Person,PersonAdmin)
 admin.site.register(ProfileMultiImage)
