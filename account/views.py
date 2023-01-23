@@ -500,6 +500,8 @@ class UploadProfileImage(APIView):
 
 #################################END###############################
 
+
+#######################home page#################################
 """NEW MATCH PROFILE"""
 class OppositeGenderProfile(APIView):
     def get(self,request):
@@ -514,7 +516,7 @@ class OppositeGenderProfile(APIView):
         if person.preference=="region":
             query=query & Q(region=person.region)
         elif person.preference=="community":
-            query=query & Q(caste=person.caste)
+            query=query & Q(caste=person.caste,region=person.region)
         persons=Person.objects.filter(query).order_by('-reg_date')[0:12]
         
        
@@ -535,6 +537,140 @@ class OppositeGenderProfile(APIView):
             ]
         return Response({"message":"success","data":data})
     
+
+
+class DailyRecomandation(APIView):
+    def get(self,request):
+        matrimonyid=request.GET['matrimony_id']
+       
+        try:
+            profile=Person.objects.get(matrimony_id=matrimonyid)
+        except Exception as e:
+            return Response({"message":"Invalid matrimony id","error":str(e)},status=200)
+        query=Q(
+                ~Q(gender=profile.gender)
+                &
+                Q(status=True)
+  
+            )
+        if profile.preference=="region":
+            query=query& Q(region=profile.region)
+        elif profile.preference=="community":
+            query=query& Q(caste=profile.caste,region=profile.region) 
+        elif profile.preference=="tredition":
+            query=query& Q(
+               Q(physical_status=profile.physical_status)
+               |
+               Q(mother_tongue=profile.mother_tongue)
+               |
+               Q(marital_status=profile.marital_status)
+               |
+               Q(drinking_habbit=profile.drinking_habbit)
+               |
+               Q(smoking_habbit=profile.smoking_habbit)
+               |
+               Q(diet_preference=profile.diet_preference)
+               |
+               Q(caste=profile.caste)
+               |
+               Q(religion=profile.religion)
+               |
+               Q(occupation=profile.occupation)
+               |
+               Q(smoking_habbit=profile.smoking_habbit)
+               |
+               Q(city=profile.city)
+               |
+               Q(state=profile.state)
+               |
+               Q(religion=profile.religion)
+               |
+               Q(occupation=profile.occupation)
+               |
+               Q(qualification=profile.qualification)
+
+           )  
+        else:
+            return Response({"message":"Enter wrong preference","status":False},status=200)
+        
+        
+        response={}
+        r_profile=Person.objects.filter(query).order_by('-reg_date')
+        for r_pro in r_profile:
+            images=r_pro.profilemultiimage_set.all()
+            response[r_pro.id]={
+                "matrimony_id":r_pro.matrimony_id,
+                "image":images[0].files.url if images.exists() else None,
+                "height":r_pro.height,
+                "dateofbirth":r_pro.dateofbirth,
+                "gender":r_pro.gender,
+                "name":r_pro.name,
+                "phone_number":r_pro.phone_number,
+                "active_plan":r_pro.active_plan
+                
+            }
+            response[r_pro.id].update(connect_status(matrimonyid,r_pro.matrimony_id))
+        
+        return Response(response.values(),status=200)
+
+
+
+"""Explore"""
+class Explore(APIView):
+    def get(self,request):
+        
+        matrimonyid=request.GET['matrimony_id']
+        
+        profile=Person.objects.get(matrimony_id=matrimonyid)
+        
+        profile=Person.objects.aggregate(
+            star=Count('pk', filter=Q(
+                Q(star=profile.star)& ~Q(gender=profile.gender)
+                )),
+            occupation=Count('pk', filter=Q(
+                
+                Q(occupation=profile.occupation)& ~Q(gender=profile.gender)
+                )),
+            qualification=Count('pk', filter=Q(
+                
+                Q(qualification=profile.qualification)& ~Q(gender=profile.gender)
+                )),
+            
+            # horoscope=Count('pk', filter=Q(
+                
+            #     Q(horoscope=profile.horoscope)& ~Q(gender=profile.gender)
+            #     )),
+           
+            city=Count('pk', filter=Q(
+                
+                Q(city=profile.city)& ~Q(gender=profile.gender)
+                )),
+            
+            
+           
+        
+        )   
+        response={}
+        for key,value in profile.items():
+            banner=BannerImage.objects.filter(name=key,status=True)
+            response[key]={
+                "name":key,
+                "image":banner[0].image.url if banner else None,
+                "color":banner[0].background if banner else None,
+                "count":value
+            }            
+        return Response(response.values())
+
+
+
+
+#############################
+
+
+
+
+
+
 
 
 
@@ -723,79 +859,6 @@ class ProfileUpdatePercentage(APIView):
       
 
 
-class DailyRecomandation(APIView):
-    def get(self,request):
-        matrimonyid=request.GET['matrimony_id']
-       
-        try:
-            profile=Person.objects.get(matrimony_id=matrimonyid)
-        except Exception as e:
-            return Response({"message":"Invalid matrimony id","error":str(e)},status=200)
-        query=Q(
-                ~Q(gender=profile.gender)
-                &
-                Q(status=True)
-  
-            )
-        if profile.preference=="region":
-            query=query& Q(region=profile.region)
-        elif profile.preference=="community":
-            query=query& Q(caste=profile.caste,region=profile.region) 
-        elif profile.preference=="tredition":
-            query=query& Q(
-               Q(physical_status=profile.physical_status)
-               |
-               Q(mother_tongue=profile.mother_tongue)
-               |
-               Q(marital_status=profile.marital_status)
-               |
-               Q(drinking_habbit=profile.drinking_habbit)
-               |
-               Q(smoking_habbit=profile.smoking_habbit)
-               |
-               Q(diet_preference=profile.diet_preference)
-               |
-               Q(caste=profile.caste)
-               |
-               Q(religion=profile.religion)
-               |
-               Q(occupation=profile.occupation)
-               |
-               Q(smoking_habbit=profile.smoking_habbit)
-               |
-               Q(city=profile.city)
-               |
-               Q(state=profile.state)
-               |
-               Q(religion=profile.religion)
-               |
-               Q(occupation=profile.occupation)
-               |
-               Q(qualification=profile.qualification)
-
-           )  
-        else:
-            return Response({"message":"Enter wrong preference","status":False},status=200)
-        
-        
-        response={}
-        r_profile=Person.objects.filter(query).order_by('-reg_date')
-        for r_pro in r_profile:
-            images=r_pro.profilemultiimage_set.all()
-            response[r_pro.id]={
-                "matrimony_id":r_pro.matrimony_id,
-                "image":images[0].files.url if images.exists() else None,
-                "height":r_pro.height,
-                "dateofbirth":r_pro.dateofbirth,
-                "gender":r_pro.gender,
-                "name":r_pro.name,
-                "phone_number":r_pro.phone_number,
-                "active_plan":r_pro.active_plan
-                
-            }
-            response[r_pro.id].update(connect_status(matrimonyid,r_pro.matrimony_id))
-        
-        return Response(response.values(),status=200)
     
     
 
@@ -832,52 +895,7 @@ class NeedToUpdateFields(APIView):
        
 
 
-"""Explore"""
-class Explore(APIView):
-    def get(self,request):
-        
-        matrimonyid=request.GET['matrimony_id']
-        
-        profile=Person.objects.get(matrimony_id=matrimonyid)
-        
-        profile=Person.objects.aggregate(
-            star=Count('pk', filter=Q(
-                Q(star=profile.star)& ~Q(gender=profile.gender)
-                )),
-            occupation=Count('pk', filter=Q(
-                
-                Q(occupation=profile.occupation)& ~Q(gender=profile.gender)
-                )),
-            qualification=Count('pk', filter=Q(
-                
-                Q(qualification=profile.qualification)& ~Q(gender=profile.gender)
-                )),
-            
-            # horoscope=Count('pk', filter=Q(
-                
-            #     Q(horoscope=profile.horoscope)& ~Q(gender=profile.gender)
-            #     )),
-           
-            city=Count('pk', filter=Q(
-                
-                Q(city=profile.city)& ~Q(gender=profile.gender)
-                )),
-            
-            
-           
-        
-        )   
-        response={}
-        for key,value in profile.items():
-            banner=BannerImage.objects.filter(name=key,status=True)
-            response[key]={
-                "name":key,
-                "image":banner[0].image.url if banner else None,
-                "color":banner[0].background if banner else None,
-                "count":value
-            }            
-        return Response(response.values())
-    
+   
 
  
  

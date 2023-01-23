@@ -15,6 +15,8 @@ urlpatterns = [
     
     
     path('new/match',OppositeGenderProfile.as_view()),##
+    path('explor/',Explore.as_view()),
+    path('match/daily',DailyRecomandation.as_view()),
    
     path("profile/",include([ 
         path('premium/',PremiumUser.as_view()),###
@@ -35,9 +37,6 @@ urlpatterns = [
     path('bookmark/',BookMarkProfile.as_view()),
     path('bookmark/show',Album.as_view()),
     path('match/percentage',profile_match_percentage),
-    
-    path('match/daily',DailyRecomandation.as_view()),
-    path('explor/',Explore.as_view()),
     
     path('coustom',coustom_matches),
     path('tab/',HomeTabs.as_view(),name="home tab"),
