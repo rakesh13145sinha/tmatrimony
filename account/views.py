@@ -1446,15 +1446,7 @@ def home_landing_page(request):
     }
     return Response(data)       
         
-        
-        
-        
-    
-
-            
-        
-
-    
+ 
 """TOTAL VIEW AND TOTAL REQUEST RECEIVE"""
 
 @api_view(['GET'])
