@@ -789,7 +789,8 @@ class DailyRecomandation(APIView):
                 "dateofbirth":r_pro.dateofbirth,
                 "gender":r_pro.gender,
                 "name":r_pro.name,
-                "phone_number":r_pro.phone_number
+                "phone_number":r_pro.phone_number,
+                "active_plan":r_pro.active_plan
                 
             }
             response[r_pro.id].update(connect_status(matrimonyid,r_pro.matrimony_id))
