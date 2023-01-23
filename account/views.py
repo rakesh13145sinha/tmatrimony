@@ -1218,7 +1218,7 @@ class PremiumUser(APIView):
         if person.preference=="region":
             query=query & Q(region=person.region)
         elif person.preference=="community":
-            query=query & Q(caste=person.caste)
+            query=query & Q(caste=person.caste,region=person.region)
         persons=Person.objects.filter(query).order_by('-reg_date')#[0:12]
        
         response=[{
