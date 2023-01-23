@@ -231,7 +231,7 @@ class SingleProfile(APIView):
         if self_profile:
             #getting self these field for updated or not if not update then update
             user_profile=self_profile.values('drinking_habbit','rashi','star','dosham',\
-                                             'smoking_habbit','diet_preference')
+                                             'smoking_habbit','diet_preference','active_plan')
         else:
             return Response({"message":"Invalid matrimony_id"},status=200)
         
