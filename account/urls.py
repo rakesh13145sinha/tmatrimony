@@ -19,7 +19,7 @@ urlpatterns = [
     path('match/daily',DailyRecomandation.as_view()),
    
     path("profile/",include([ 
-        path('premium/',PremiumUser.as_view()),###
+        path('premium/',PremiumUser.as_view()),###home page
         path('info/',ProfileInfo.as_view()),
         path('',SingleProfile.as_view()),
         path('complete',ProfileUpdatePercentage.as_view()),
