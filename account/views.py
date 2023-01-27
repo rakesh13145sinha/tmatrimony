@@ -1620,7 +1620,7 @@ def coustom_matches(request):
         
     sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=False) 
     print(sorted_list) 
-    persons=Person.objects.filter(id__in=[i.id for i in sorted_list ]).only('id')  
+    persons=Person.objects.filter(id__in=[i['id'] for i in sorted_list ]).only('id')  
     serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
     return Response(serializer.data) 
     
