@@ -1636,7 +1636,8 @@ def match_of_the_day(request):
     except Exception as e:
         return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
     #dec_order=['Diamond',"Gold","Platinum","Silver","Trial"]
-    profiles=Person.objects.filter(~Q(gender=profile.gender)).only('id','active_plan').order_by('active_plan')
+    plan_query=~Q(gender=profile.gender) & ~Q(active_plan__in=["Waiting",'Expire'])
+    profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
     # primium_profiles=[]
     # for pro in profiles:
     return Response(profiles.values('id',"matrimony_id",'active_plan'))  
