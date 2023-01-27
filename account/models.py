@@ -155,6 +155,8 @@ class ViewedProfile(models.Model):
 	profile=models.ForeignKey(Person,on_delete=models.CASCADE,null=True)
 	view=models.ForeignKey(Person,on_delete=models.CASCADE,related_name="viewprofile",null=True,blank=True)
 	preference=models.CharField(max_length=50,null=True,blank=True)
+	created_date=models.DateTimeField(auto_now=True,auto_now_add=False,null=True)
+	updated_date=models.DateTimeField(auto_now=False,auto_now_add=True,null=True)
 
 class ViewedPhonNumber(models.Model):
 	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
