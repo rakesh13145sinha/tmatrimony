@@ -1352,7 +1352,7 @@ class ProfileInfo(APIView):
             "occupation":person.occupation,
             "name":person.name,
             "active_plan":person.active_plan,
-            "viewed_by_me":person.viewedprofile_set.filter(preference=person.preference),
+            "viewed_by_me":person.viewedprofile_set.filter(preference=person.preference).count(),
             "viewed_by_others":ViewedProfile.objects.filter(view=person).only('view').count(),
             "interest":FriendRequests.objects.filter(requested_matrimony_id=matrimonyid).count()
             }
