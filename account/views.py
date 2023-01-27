@@ -1370,7 +1370,7 @@ class HomeTabs(APIView):
         _q=request.GET['q'].strip()
         _list=['matches','new','premium','mutual','saw','viewed',
                'location','horoscope','qualification','star','occupation',
-               'workplace' ,"region","community"   
+               'workplace' ,"region","community" ,"custom"  
                              ]
        
         if _q not in _list:
@@ -1487,7 +1487,9 @@ class HomeTabs(APIView):
                 
                 ~Q(qualification=person.qualification)
                 )
-        
+        elif _q=="custom":
+            pass
+            
        
         persons=Person.objects.filter(query).only('id').order_by('-id')
         
@@ -1635,9 +1637,25 @@ def match_of_the_day(request):
         profile=Person.objects.get(matrimony_id=matrimonyid)
     except Exception as e:
         return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
+    """plan priority base"""
+    """
+        1)Diamond
+        2)Gold
+        3)Platinum
+        4)Silver
+        5)Trial
+   
+    """
     #dec_order=['Diamond',"Gold","Platinum","Silver","Trial"]
     plan_query=~Q(gender=profile.gender) & ~Q(active_plan__in=["Waiting",'Expire'])
     profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
+    
+    
+    """most viewed profile"""
+    highest_views=ViewedProfile.objects.annotate(viewed=Count("view")).order_by("view")
+    print(highest_views.values("viewed","profile",'view'))
+    
+    # profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
     # primium_profiles=[]
     # for pro in profiles:
     return Response(profiles.values('id',"matrimony_id",'active_plan'))  
