@@ -1619,8 +1619,24 @@ def custom_matches(request):
         collect_profiles.append({"id":pro.id,"matrimony_id":pro.matrimony_id,"percentage":updated_code})
         
     sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
-    print(sorted_list) 
+    # print(sorted_list) 
     persons=Person.objects.filter(id__in=[i['id'] for i in sorted_list ]).only('id')  
     serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
     return Response(serializer.data) 
-    
+
+
+
+'''match of the day'''
+@api_view(['GET'])
+def match_of_the_day(request):
+    matrimonyid=request.GET['matrimony_id']
+   
+    try:
+        profile=Person.objects.get(matrimony_id=matrimonyid)
+    except Exception as e:
+        return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
+    #dec_order=['Diamond',"Gold","Platinum","Silver","Trial"]
+    profiles=Person.objects.filter(~Q(gender=profile.gender)).only('id','active_plan').order_by('active_plan')
+    # primium_profiles=[]
+    # for pro in profiles:
+    return Response(profiles.values('id',"matrimony_id",'active_plan'))  

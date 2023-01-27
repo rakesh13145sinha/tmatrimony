@@ -39,6 +39,7 @@ urlpatterns = [
     path('match/percentage',profile_match_percentage),
     
     path('custom',custom_matches),
+    path('match_of_day',match_of_the_day,name="match of the day"),
     path('tab/',HomeTabs.as_view(),name="home tab"),
     path('banner',Banner.as_view()),
     path('home',home_landing_page,name="landing page")
