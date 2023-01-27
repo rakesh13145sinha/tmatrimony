@@ -1516,7 +1516,8 @@ def get_total_number_request_and_view(request):
         
     except Exception as e:
          viewed=0
-    friend_query=Q(requested_matrimony_id=person.matrimony_id) & ~Q(request_status="Connected")
+    
+    friend_query=Q()Q(requested_matrimony_id=person.matrimony_id) & Q(request_status="Waiting")
     total_request_receive=FriendRequests.objects \
     .filter(friend_query).only("requested_matrimony_id",'request_status').count()
     
