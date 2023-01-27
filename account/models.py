@@ -145,12 +145,6 @@ class SaveOTP(models.Model):
 	def __str__(self):
 		return "%s"%(self.phone_number)
 
-
-# class ViewedProfile(models.Model):
-# 	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
-# 	view=models.ManyToManyField(Person,related_name="viewprofile")
-# 	preference=models.CharField(max_length=50,null=True,blank=True)
- 
 class ViewedProfile(models.Model):
 	profile=models.ForeignKey(Person,on_delete=models.CASCADE,null=True)
 	view=models.ForeignKey(Person,on_delete=models.CASCADE,related_name="viewprofile",null=True,blank=True)

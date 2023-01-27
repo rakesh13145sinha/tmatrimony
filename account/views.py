@@ -1581,6 +1581,7 @@ def coustom_matches(request):
         ]
     
     profiles=Person.objects.filter(~Q(gender=profile.gender))
+    collect_profiles=[]
     for pro in profiles:
     
         pp=Partner_Preferences.objects.get(profile=pro)
@@ -1615,7 +1616,7 @@ def coustom_matches(request):
             updated_code=(matched_field*100)//number_of_fields
         except ZeroDivisionError:
             updated_code=0
-       
-        response.update({"percentage":updated_code})
+        collect_profiles.append({"id":pro.id,"matrimony_id":pro.matrimony_id,"percentage":updated_code})
         
-        return Response(response,status=200)
+        
+    return Response(collect_profiles,status=200)
