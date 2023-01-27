@@ -1652,8 +1652,8 @@ def match_of_the_day(request):
     
     
     """most viewed profile"""
-    highest_views=ViewedProfile.objects.annotate(viewed=Count("view")).order_by("view")
-    print(highest_views.values())
+    highest_views=ViewedProfile.objects.annotate(viewed=Count("view")).order_by("viewed")
+    print(highest_views.values("id","profile","view",'viewed'))
     
     # profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
     # primium_profiles=[]
