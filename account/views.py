@@ -989,11 +989,7 @@ class SendFriendRequest(APIView):
     def get(self,request):
         matrimonyid=request.GET['matrimony_id']
         requestid=request.GET['requeted_matrimony_id']
-        query=Q(
-            profile__matrimony_id=matrimonyid,
-            requested_matrimony_id=requestid,
-            status=True
-        )
+        
         try:
             sender=Person.objects.get(matrimony_id=matrimonyid)
         except Exception as e:
@@ -1007,12 +1003,20 @@ class SendFriendRequest(APIView):
         if sender.gender==receiver.gender:
             return Response({"message":"Both id belongs to same gender","error":str(e)},status=400)
         
+        query=Q(
+            profile__matrimony_id=matrimonyid,
+            requested_matrimony_id=requestid,
+            status=True,
+            preference=sender.preference
+            
+        )
         try:
             send_friend_request=FriendRequests.objects.get(query)
             return Response({"message":"Request Exsits",
                              "connect_status":send_friend_request.request_status})
         except Exception as e:
-            sender.friendrequests_set.create(requested_matrimony_id=receiver.matrimony_id,status=True)
+            sender.friendrequests_set.create(requested_matrimony_id=receiver.matrimony_id,\
+                                             status=True,preference=sender.preference)
             return Response({"message":"Request Send Successfully","connect_status":"Waiting"},status=200)
     
     
