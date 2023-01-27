@@ -1410,18 +1410,16 @@ class HomeTabs(APIView):
         elif _q=="viewed":
             
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
-            if person.preference=="region":
-                query=query & Q(region=person.region,religion=person.religion)
-                print(">>>>>>>region")
-            elif person.preference=="community":
-                query=query & Q(caste=person.caste,religion=person.religion)
-                print(">>>>>>>community")
+            # if person.preference=="region":
+            #     query=query & Q(region=person.region,religion=person.religion)
+            #     print(">>>>>>>region")
+            # elif person.preference=="community":
+            #     query=query & Q(caste=person.caste,religion=person.religion)
+                #print(">>>>>>>community")
             # if view_profile:
             query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
             print("============xxxx============")
-            # else:
-            #     print("=============>>>>>>>>>============")
-            #     return Response([],status=200)
+            
         elif _q=="location":
             query=query & Q(
                 Q(city__iexact=person.city)
