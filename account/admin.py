@@ -15,5 +15,5 @@ class FriendRequestsAdmin(admin.ModelAdmin):
    
     list_editable=['preference']
 admin.site.register(Person,PersonAdmin)
-admin.site.register(ProfileMultiImage)
+admin.site.register(ViewedProfile)
 admin.site.register(FriendRequests,FriendRequestsAdmin)
