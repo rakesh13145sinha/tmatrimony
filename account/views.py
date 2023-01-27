@@ -60,7 +60,7 @@ class Banner(APIView):
 
 
 """This function for  view profile check"""
-def ViewedProfiles(matrimonyid,requestid,status=None):
+def ViewedProfiles(matrimonyid,requestid,preference,status=None):
     """self matrimony id"""
     selfprofile=get_object_or_404(Person,matrimony_id=matrimonyid)
     
@@ -76,7 +76,7 @@ def ViewedProfiles(matrimonyid,requestid,status=None):
                 view_profile[0].view.add(requested_profile)
         else:
             
-            view_profile=ViewedProfile.objects.create(profile=selfprofile)
+            view_profile=ViewedProfile.objects.create(profile=selfprofile,preference=preference)
             view_profile.view.add(requested_profile)
         return True
     elif status is not None:
@@ -246,7 +246,7 @@ class SingleProfile(APIView):
         #bookmark
         bookmark=Bookmark.objects.filter(profile__matrimony_id=matrimonyid,album__matrimony_id=requestid)
         #view profile
-        ViewedProfiles(matrimonyid,requestid)
+        ViewedProfiles(matrimonyid,requestid,self_profile[0].preference)
         #check phone number views statas
         phone_status=ViewedPhoneNumberStatus(self_profile[0],profile)
     
@@ -1463,12 +1463,13 @@ def get_total_number_request_and_view(request):
                          "status":False,"homeResponse":{"message":"Invalid matrimony id"}},status=400)
     try:
         #my profile viewed by other ,how many member viewed my profile
-        viewed=ViewedProfile.objects.filter(view=person).count()
+        viewed=ViewedProfile.objects.filter(view=person,preference=person.preference).count()
         
     except Exception as e:
          viewed=0
     total_request_receive=FriendRequests.objects \
-    .filter(requested_matrimony_id=person.matrimony_id).only("requested_matrimony_id").count()
+    .filter(requested_matrimony_id=person.matrimony_id,preference=person.preference)\
+    .only("requested_matrimony_id").count()
     homeImage=HomeScreenImage.objects.filter(status=True)
     #search_list=["viewed profile","response received","album","match maker","wedding planner","astrologer"]
     response={}

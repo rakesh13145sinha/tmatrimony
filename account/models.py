@@ -146,14 +146,20 @@ class SaveOTP(models.Model):
 		return "%s"%(self.phone_number)
 
 
+# class ViewedProfile(models.Model):
+# 	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
+# 	view=models.ManyToManyField(Person,related_name="viewprofile")
+# 	preference=models.CharField(max_length=50,null=True,blank=True)
+ 
 class ViewedProfile(models.Model):
-	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
-	view=models.ManyToManyField(Person,related_name="viewprofile")
-	
+	profile=models.ForeignKey(Person,on_delete=models.CASCADE)
+	view=models.ForeignKey(Person,related_name="viewprofile")
+	preference=models.CharField(max_length=50,null=True,blank=True)
 
 class ViewedPhonNumber(models.Model):
 	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
 	view=models.ManyToManyField(Person,related_name="viewphonenumber")
+
 
 
 class Partner_Preferences(models.Model):
@@ -248,6 +254,7 @@ class FriendRequests(models.Model):
 	created_date=models.DateTimeField(auto_now=True,auto_now_add=False)
 	updated_date=models.DateTimeField(auto_now=False,auto_now_add=True)
 	status=models.BooleanField(default=False)
+	preference=models.CharField(max_length=50,null=True,blank=True)
 	
 """
 public demanod this will store view by
