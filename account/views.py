@@ -1516,9 +1516,10 @@ def get_total_number_request_and_view(request):
         
     except Exception as e:
          viewed=0
+    friend_query=Q(requested_matrimony_id=person.matrimony_id) & ~Q(request_status="Connected")
     total_request_receive=FriendRequests.objects \
-    .filter(requested_matrimony_id=person.matrimony_id)\
-    .only("requested_matrimony_id",'preference').count()
+    .filter(friend_query).only("requested_matrimony_id",'request_status').count()
+    
     
     """accecpt preference"""
     receive_request=UpdateRequests.objects.filter(other_profile=person).count()
