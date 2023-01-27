@@ -153,7 +153,7 @@ class SaveOTP(models.Model):
  
 class ViewedProfile(models.Model):
 	profile=models.ForeignKey(Person,on_delete=models.CASCADE)
-	view=models.ForeignKey(Person,on_delete=models.CASCADE)
+	view=models.ForeignKey(Person,on_delete=models.CASCADE,related_name="viewprofile")
 	preference=models.CharField(max_length=50,null=True,blank=True)
 
 class ViewedPhonNumber(models.Model):
