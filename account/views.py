@@ -1499,6 +1499,7 @@ class HomeTabs(APIView):
 
 @api_view(['GET'])
 def get_total_number_request_and_view(request):
+    from connect.models import UpdateRequests
     matrimonyid=request.GET['matrimony_id']
     try:
         person=Person.objects.get(matrimony_id=matrimonyid)
@@ -1514,6 +1515,9 @@ def get_total_number_request_and_view(request):
     total_request_receive=FriendRequests.objects \
     .filter(requested_matrimony_id=person.matrimony_id,preference=person.preference)\
     .only("requested_matrimony_id").count()
+    
+    """accecpt preference"""
+    receive_request=UpdateRequests.objects.filter(other_profile=person).count()
     homeImage=HomeScreenImage.objects.filter(status=True)
     #search_list=["viewed profile","response received","album","match maker","wedding planner","astrologer"]
     response={}
@@ -1530,7 +1534,7 @@ def get_total_number_request_and_view(request):
                  "id":image.id,
                  "name":image.name,
                 "image":image.image.url,
-                "count":total_request_receive
+                "count":total_request_receive + receive_request
             }
         else:
             response[image.id]={
