@@ -1382,7 +1382,7 @@ class HomeTabs(APIView):
         query=~Q(gender=person.gender)
         if person.preference=="region":
             query=query & Q(region=person.region,religion=person.religion)
-        if person.preference=="community":
+        elif person.preference=="community":
             query=query & Q(caste=person.caste,religion=person.religion)
             
         
@@ -1407,11 +1407,11 @@ class HomeTabs(APIView):
         elif _q=="viewed":
             
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
-            if view_profile.exists():
+            if view_profile:
                 query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
-                print("=========================")
+                print("============xxxx============")
             else:
-                print("=========================")
+                print("=============>>>>>>>>>============")
                 return Response([],status=200)
         elif _q=="location":
             query=query & Q(
