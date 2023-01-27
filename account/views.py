@@ -1375,6 +1375,7 @@ class HomeTabs(APIView):
             return Response({"message":"This is not Valid query","status":False},status=403)
         try:
             person=Person.objects.get(matrimony_id=matrimonyid)
+            print(person.preference)
         except Exception as e:
             return Response({"message":"Invalid matrimony id","status":False},status=400)
         
@@ -1405,7 +1406,9 @@ class HomeTabs(APIView):
                 return Response([],status=200)
         elif _q=="viewed":
             
-            view_profile=ViewedProfile.objects.filter(view=person, preference=person.preference)
+            view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
+            for i in view_profile:
+                print(i.profile.name,i.view.name,preference=i.preference)
             query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
        
         elif _q=="location":
