@@ -1517,7 +1517,7 @@ def get_total_number_request_and_view(request):
     except Exception as e:
          viewed=0
     total_request_receive=FriendRequests.objects \
-    .filter(requested_matrimony_id=person.matrimony_id,preference=person.preference)\
+    .filter(requested_matrimony_id=person.matrimony_id)\
     .only("requested_matrimony_id",'preference').count()
     
     """accecpt preference"""
