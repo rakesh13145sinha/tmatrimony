@@ -1407,11 +1407,12 @@ class HomeTabs(APIView):
         elif _q=="viewed":
             
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
-            for i in view_profile:
-                print(i.profile.name,i.view.name,i.preference)
-            print("===========xxxxxxxxxx========================")
-            query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
-            print("===================================")
+            if view_profile.exists():
+                query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
+                print("=========================")
+            else:
+                print("=========================")
+                return Response([],status=200)
         elif _q=="location":
             query=query & Q(
                 Q(city__iexact=person.city)
