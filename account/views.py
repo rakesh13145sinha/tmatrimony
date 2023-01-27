@@ -60,30 +60,24 @@ class Banner(APIView):
 
 
 """This function for  view profile check"""
-def ViewedProfiles(matrimonyid,requestid,preference,status=None):
+def ViewedProfiles(matrimonyid,requestid,preference):
     """self matrimony id"""
     selfprofile=get_object_or_404(Person,matrimony_id=matrimonyid)
     
     """requested matrimony id"""
     requested_profile=get_object_or_404(Person,matrimony_id=requestid)
     
-    view_profile=ViewedProfile.objects.filter(profile__id=selfprofile.id)
-    if status is None:                  
-        if view_profile.exists():
-            if view_profile[0].view.filter(id=requested_profile.id).exists():
-                pass
-            else:
-                view_profile[0].view.add(requested_profile)
-        else:
-            
-            view_profile=ViewedProfile.objects.create(profile=selfprofile,preference=preference)
-            view_profile.view.add(requested_profile)
+    view_profile=selfprofile.viewedprofile_set.filter(view=requested_profile,preference=selfprofile.preference)
+    
+               
+    if view_profile.exists():
         return True
-    elif status is not None:
-        if view_profile.exists():
-            return view_profile[0].view.filter(id=requested_profile.id).exists()
-        else:
-            return False
+    else:
+        view_profile=selfprofile.viewedprofile_set \
+        .create(view=requested_profile,preference=selfprofile.preference)
+        return True
+    
+    
 
 
 
