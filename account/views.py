@@ -1618,5 +1618,9 @@ def coustom_matches(request):
             updated_code=0
         collect_profiles.append({"id":pro.id,"matrimony_id":pro.matrimony_id,"percentage":updated_code})
         
-        
-    return Response(collect_profiles,status=200)
+    sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=False) 
+    print(sorted_list) 
+    persons=Person.objects.filter(id__in=[i.id for i in sorted_list ]).only('id')  
+    serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
+    return Response(serializer.data) 
+    
