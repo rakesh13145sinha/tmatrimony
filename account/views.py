@@ -1409,6 +1409,7 @@ class HomeTabs(APIView):
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
             for i in view_profile:
                 print(i.profile.name,i.view.name,i.preference)
+            print("===========xxxxxxxxxx========================")
             query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
             print("===================================")
         elif _q=="location":
