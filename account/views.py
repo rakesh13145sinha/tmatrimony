@@ -1563,7 +1563,7 @@ def get_total_number_request_and_view(request):
 
 
 @api_view(['GET'])
-def coustom_matches(request):
+def custom_matches(request):
     matrimonyid=request.GET['matrimony_id']
    
     try:

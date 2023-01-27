@@ -38,7 +38,7 @@ urlpatterns = [
     path('bookmark/show',Album.as_view()),
     path('match/percentage',profile_match_percentage),
     
-    path('coustom',coustom_matches),
+    path('custom',custom_matches),
     path('tab/',HomeTabs.as_view(),name="home tab"),
     path('banner',Banner.as_view()),
     path('home',home_landing_page,name="landing page")
