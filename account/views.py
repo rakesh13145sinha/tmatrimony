@@ -1523,7 +1523,7 @@ def get_total_number_request_and_view(request):
     
     
     """accecpt preference"""
-    receive_request=UpdateRequests.objects.filter(other_profile=person).count()
+    receive_request=UpdateRequests.objects.filter(other_profile=person,request_status="Waiting").count()
     print(">>>>>>>>>xxxx>>>>>>>>>>",receive_request,total_request_receive)
     homeImage=HomeScreenImage.objects.filter(status=True)
     #search_list=["viewed profile","response received","album","match maker","wedding planner","astrologer"]
