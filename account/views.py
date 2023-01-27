@@ -1405,9 +1405,8 @@ class HomeTabs(APIView):
                 return Response([],status=200)
         elif _q=="viewed":
             
-            view_profile=ViewedProfile.objects.filter(view__id=person.id)
-            #query=Q(id__in=[i.profile.id for i in view_profile])
-            query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
+            view_profile=person.viewedprofile_set.filter(preference=person.preference)
+            query=query & Q(id__in=view_profile.values_list('view__id',flat=True))
        
         elif _q=="location":
             query=query & Q(
@@ -1457,7 +1456,7 @@ def get_total_number_request_and_view(request):
                          "status":False,"homeResponse":{"message":"Invalid matrimony id"}},status=400)
     try:
         #my profile viewed by other ,how many member viewed my profile
-        viewed=ViewedProfile.objects.filter(view=person,preference=person.preference).count()
+        viewed=person.viewedprofile_set.filter(preference=person.preference).count()
         
     except Exception as e:
          viewed=0
