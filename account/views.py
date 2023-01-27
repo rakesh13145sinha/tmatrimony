@@ -1347,15 +1347,13 @@ class ProfileInfo(APIView):
         matrimonyid=request.GET['matrimony_id']
         person=Person.objects.get(matrimony_id=matrimonyid)
         image=person.profilemultiimage_set.all()
-        viewed_by_me=ViewedProfile.objects.filter(profile=person)
-        FriendRequests.objects.filter(requested_matrimony_id=matrimonyid)
         response={
             "profileimage":image[0].files.url if image.exists() else None,
             "occupation":person.occupation,
             "name":person.name,
             "active_plan":person.active_plan,
-            "viewed_by_me": viewed_by_me[0].view.count() if viewed_by_me.exists() else 0,
-            "viewed_by_others":ViewedProfile.objects.filter(view__id=person.id).count(),
+            "viewed_by_me":person.viewedprofile_set.filter(preference=person.preference),
+            "viewed_by_others":ViewedProfile.objects.filter(view=person).only('view').count(),
             "interest":FriendRequests.objects.filter(requested_matrimony_id=matrimonyid).count()
             }
         return Response(response)
