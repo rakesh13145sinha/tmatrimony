@@ -1395,10 +1395,21 @@ class HomeTabs(APIView):
                 query=query & Q(caste=person.caste,religion=person.religion)
                 print(">>>>>>>community")
             query=query & Q(reg_date__gte=interval_time)
+        
         elif _q=="premium":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             USER_PLAN=["Silver","Gold",'Diamond',"Platinum","Trial"]
             query=query & Q(active_plan__in=USER_PLAN)
+        
         elif _q=="mutual":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=Q(id__in=mutual_match(matrimonyid))
         
         elif _q=="saw":
@@ -1408,19 +1419,17 @@ class HomeTabs(APIView):
             else:
                 return Response([],status=200)
         elif _q=="viewed":
-            
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference)
-            # if person.preference=="region":
-            #     query=query & Q(region=person.region,religion=person.religion)
-            #     print(">>>>>>>region")
-            # elif person.preference=="community":
-            #     query=query & Q(caste=person.caste,religion=person.religion)
-                #print(">>>>>>>community")
-            # if view_profile:
             query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
-            print("============xxxx============")
-            
+           
         elif _q=="location":
+            
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
+            
             query=query & Q(
                 Q(city__iexact=person.city)
                 |
@@ -1431,17 +1440,47 @@ class HomeTabs(APIView):
                 )
             
         
-        elif _q=="star":     
+        elif _q=="star":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)     
             query=query & Q(star=getattr(person,_q)) 
         elif _q=="occupation":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=query & Q(occupation=getattr(person,_q))     
         elif _q=="workplace":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=query & Q(workplace=getattr(person,_q))
         elif _q=="city":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=query & Q(city=getattr(person,_q))
         elif _q=="horoscope":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=query & Q(horoscope=getattr(person,_q))
         elif _q=="qualification":
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
             query=query & Q(
                 
                 ~Q(qualification=person.qualification)
