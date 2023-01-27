@@ -1653,7 +1653,7 @@ def match_of_the_day(request):
     
     """most viewed profile"""
     gender=~Q(view__gender=profile.gender)
-    highest_views=ViewedProfile.objects.filter(gender).aggregate(viewed=Count("view"))
+    highest_views=ViewedProfile.objects.filter(gender).vlaues('view').distinct().annotate(viewed=Count("view"))
     print(highest_views)
     
     # profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
