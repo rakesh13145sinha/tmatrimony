@@ -1,7 +1,7 @@
 import os
 import random
-# from datetime import datetime ,date,timedelta
-
+#from datetime import datetime ,date,timedelta
+import datetime
 import pytz 
 from decouple import config
 from django.db.models import Count, Q
@@ -12,12 +12,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from itertools import chain
 from age import *
-
+from caste import *
 from .models import *
 from .send_otp import *
 from .serializers import *
 from connect.status import *
 from record import *
+# from selenium import webdriver
+from bs4 import BeautifulSoup
+import requests
 
 print("This is testing phase. Don't mind it.................")
 
@@ -87,15 +90,12 @@ def ViewedProfiles(matrimonyid,requestid,preference):
 
 """VIEW PHONE NUMBERS"""
 """This function for  view profile check"""
+  
 def ViewedPhoneNumberStatus(matrimonyid,requestid):
     
     try:
-        view_profile=ViewedPhonNumber.objects.get(profile=matrimonyid)
-        check_phone_number=view_profile.view.filter(id=requestid.id)
-        if check_phone_number:
-            return True
-        else:
-            return False
+        view_profile=ViewPhonNumber.objects.get(profile=matrimonyid,view=requestid.id)
+        return True
     except Exception as e:
         return False
    
@@ -212,7 +212,46 @@ class Nation(APIView):
             else:
                 return Response([])  
         else:
+            
+            web=requests.get('https://www.britannica.com/topic/list-of-cities-and-towns-in-India-2033033')
+            content=web.text
+            soup = BeautifulSoup(content)
+            #print(soup.prettify())
+            states=[]
+            for a in soup.findAll('h2', attrs={'class':'h1'}):
+                # print(a)
+                title_element = a.find("a", class_="md-crosslink")
+                #print(title_element.text)
+                states.append(title_element.text)
+            
+            
             return Response([{"name":state} for state in states]) 
+
+class PersonReligion(APIView):
+    def get(self,request):
+        query=request.GET.get('q')
+        response={}
+        if query is not None:
+            # cities=City.objects.filter(state__name=query)
+            if query=="Hindu":
+                return Response([{"name":caste} for caste in Hindu]) 
+            elif query=="Muslim": 
+                return Response([{"name":caste} for caste in Muslim])
+            elif query=="Christian": 
+                return Response([{"name":caste} for caste in Christian])
+            if query=="Sikh":
+                return Response([{"name":caste} for caste in Sikh]) 
+            elif query=="Jain": 
+                return Response([{"name":caste} for caste in Jain])
+            elif query=="Parsi": 
+                return Response([{"name":caste} for caste in Parsi])
+            elif query=="Buddhist": 
+                return Response([{"name":caste} for caste in Buddhist])
+            
+            else:
+                return Response({"message":"worng query enterd connect with developer"})  
+        else:
+            return Response([{"name":reg} for reg in Religion]) 
 
 
 ########################PROFILE API#################################               
@@ -511,7 +550,7 @@ class OppositeGenderProfile(APIView):
             query=query & Q(region=person.region,religion=person.religion)
         elif person.preference=="community":
             query=query & Q(caste=person.caste,religion=person.religion)
-        persons=Person.objects.filter(query).order_by('-reg_date')[0:12]
+        persons=Person.objects.filter(query).order_by('-reg_date')[0:6]
         
        
         data=[{
@@ -713,31 +752,31 @@ def home_landing_page(request):
     tradition={}
     region={}
     caste={}
-    if len(treditional_profiles)>=5:
-        for obj in treditional_profiles[0:5]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                print(image)
-                tradition[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
+    
+    for obj in treditional_profiles[0:5]:
+        try:
+            image=obj.profilemultiimage_set.first()
+            print(image)
+            tradition[obj.id]={"image":image.files.url}
+        except Exception as e:
+            pass
    
        
         
-    if len(region_profiles)>=4:  
-        for obj in region_profiles[0:4]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                region[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
-    if len(caste_profiles)>=4 :    
-        for obj in caste_profiles[0:4]:
-            try:
-                image=obj.profilemultiimage_set.first()
-                caste[obj.id]={"image":image.files.url}
-            except Exception as e:
-                pass
+      
+    for obj in region_profiles[0:4]:
+        try:
+            image=obj.profilemultiimage_set.first()
+            region[obj.id]={"image":image.files.url}
+        except Exception as e:
+            pass
+       
+    for obj in caste_profiles[0:4]:
+        try:
+            image=obj.profilemultiimage_set.first()
+            caste[obj.id]={"image":image.files.url}
+        except Exception as e:
+            pass
     data={
         "tradition":tradition.values() if len(treditional_profiles)>=5 else [] ,
         "region":region.values() if len(treditional_profiles)>=4 else [],
@@ -809,7 +848,11 @@ class Album(APIView):
                 images=ProfileMultiImage.objects.filter(profile__id=person.id)
                 response[person.id]={
                     "profileimage":images[0].files.url if images.exists() else None,
-                    "matrimony_id":person.matrimony_id
+                    "matrimony_id":person.matrimony_id,
+                    "name":person.name,
+                    "height":person.height,
+                    "dateofbirth":person.dateofbirth,
+                    "active_plan":person.active_plan
                     }
                                         
             return Response(response.values())
@@ -1236,16 +1279,23 @@ def view_phone_nunmber(request):
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
     else:
-        try:
-            add_phone_number=ViewedPhonNumber.objects.get(profile=logged_profile)
-        except Exception as e:
-            add_phone_number=ViewedPhonNumber.objects.create(profile=logged_profile)
-        add_phone_number.view.add(request_profile)
-        logged_profile.total_access=str(int(logged_profile.total_access)-1)
-        logged_profile.save()
-        return Response({"message":"total access updated",
-                            "total_access":logged_profile.total_access,
-                            "status":False},status=200)
+        if int(logged_profile.total_access)>=1:
+            today_date=datetime.datetime.today().date()
+            try:
+                ViewPhonNumber.objects.get(profile=logged_profile,view=request_profile.id)
+            except Exception as e:
+                ViewPhonNumber.objects \
+                .create(profile=logged_profile,view=request_profile.id,add_date=today_date)
+            
+            logged_profile.total_access=str(int(logged_profile.total_access)-1)
+            logged_profile.save()
+            return Response({"message":"total access updated",
+                                "total_access":logged_profile.total_access,
+                                "status":False},status=200)
+        else:
+            return Response({"message":"Need to recharge your plan",
+                                "total_access":logged_profile.total_access,
+                                "status":False},status=200)
             
 
 
@@ -1386,7 +1436,15 @@ class HomeTabs(APIView):
             
         
         if _q=="matches":
-            query
+            # query
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+                print(">>>>>>>region")
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
+                print(">>>>>>>community")
+            else:
+                query
         elif _q=="new":
             india=pytz.timezone('Asia/Kolkata')
             interval_time=datetime.datetime.today().now(india) - datetime.timedelta(days=10)
@@ -1488,7 +1546,84 @@ class HomeTabs(APIView):
                 ~Q(qualification=person.qualification)
                 )
         elif _q=="custom":
-            pass
+            _height_list=[
+            "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
+            "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
+            "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
+            "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
+            "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+        
+            ]
+            if person.preference=="region":
+                query=query & Q(region=person.region,religion=person.religion)
+               
+            elif person.preference=="community":
+                query=query & Q(caste=person.caste,religion=person.religion)
+            else:
+                query
+    
+            profiles=Person.objects.filter(query)
+            collect_profiles=[]
+            for pro in profiles:
+    
+                pp=Partner_Preferences.objects.get(profile=pro)
+            
+                _index={"min_height":_height_list.index(pp.min_height),
+                    "max_height":_height_list.index(pp.max_height)}
+            
+                target_profile_index=_height_list.index(person.height)
+            
+                response={
+                "dateofbirth":True if  int(person.dateofbirth) in range(int(pp.min_age),int(pp.max_age)) else False,
+                "height":True if target_profile_index in range(_index['min_height'],_index['max_height']) else False,
+                'physical_status': True if  pp.physical_status== person.physical_status else False,
+                'mother_tongue': True if pp.mother_tongue==person.mother_tongue else False,
+                "marital_status": True if  pp.marital_status==person.marital_status else False,
+                'religion': True if pp.religion==person.religion else False,
+                'occupation': True if  pp.occupation==person.occupation else False,
+                "annual_income": True if  pp.annual_income==person.annual_income else False,
+                'country': True if  pp.country==person.country else False,
+                "qualification":True if  pp.qualification==person.qualification else False,
+                
+                }  
+    
+        
+        
+                matched_field=sum([1 for value in response.values() if value is True ])
+                not_match_filed=sum([1 for value in response.values() if value is False ])
+                
+                
+                number_of_fields=matched_field+not_match_filed
+                try:
+                    updated_code=(matched_field*100)//number_of_fields
+                except ZeroDivisionError:
+                    updated_code=0
+                collect_profiles.append({"id":pro.id,"name":pro.name,"percentage":updated_code})
+        
+            sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
+            #print(sorted_list)
+            custom={}
+            for i in [i['id'] for i in sorted_list ]:
+                pro=Person.objects.get(id=i)
+                # print(pro.query)
+                images=pro.profilemultiimage_set.all()
+                custom[pro.id]={
+                    "matrimony_id":pro.matrimony_id,
+                    "profileimage":[{"image":images[0].files.url if images.exists() else None} ],
+                    "height":pro.height,
+                    "dateofbirth":pro.dateofbirth,
+                    "gender":pro.gender,
+                    "name":pro.name,
+                    "occupation" :pro.occupation,
+                    "city":pro.city,
+                    "state":pro.state,
+                    "qualification":pro.qualification ,
+                    "active_plan":pro.active_plan,
+                    
+                }  
+                custom[pro.id].update(connect_status(person.matrimony_id,pro.matrimony_id))                      
+            return Response(custom.values())
+
             
        
         persons=Person.objects.filter(query).only('id').order_by('-id')
@@ -1564,67 +1699,85 @@ def get_total_number_request_and_view(request):
 
 
 
-@api_view(['GET'])
-def custom_matches(request):
-    matrimonyid=request.GET['matrimony_id']
+# @api_view(['GET'])
+# def custom_matches(request):
+#     matrimonyid=request.GET['matrimony_id']
    
-    try:
-        profile=Person.objects.get(matrimony_id=matrimonyid)
-    except Exception as e:
-        return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
+#     try:
+#         profile=Person.objects.get(matrimony_id=matrimonyid)
+#     except Exception as e:
+#         return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
     
-    _height_list=[
-    "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
-    "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
-    "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
-    "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
-    "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+#     _height_list=[
+#     "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
+#     "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
+#     "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
+#     "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
+#     "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
         
-        ]
+#         ]
     
-    profiles=Person.objects.filter(~Q(gender=profile.gender))
-    collect_profiles=[]
-    for pro in profiles:
+#     profiles=Person.objects.filter(~Q(gender=profile.gender))
+#     collect_profiles=[]
+#     for pro in profiles:
     
-        pp=Partner_Preferences.objects.get(profile=pro)
+#         pp=Partner_Preferences.objects.get(profile=pro)
     
-        _index={"min_height":_height_list.index(pp.min_height),
-            "max_height":_height_list.index(pp.max_height)}
+#         _index={"min_height":_height_list.index(pp.min_height),
+#             "max_height":_height_list.index(pp.max_height)}
     
-        target_profile_index=_height_list.index(profile.height)
+#         target_profile_index=_height_list.index(profile.height)
     
-        response={
-        "dateofbirth":True if  int(profile.dateofbirth) in range(int(pp.min_age),int(pp.max_age)) else False,
-        "height":True if target_profile_index in range(_index['min_height'],_index['max_height']) else False,
-        'physical_status': True if  pp.physical_status== profile.physical_status else False,
-        'mother_tongue': True if pp.mother_tongue==profile.mother_tongue else False,
-        "marital_status": True if  pp.marital_status==profile.marital_status else False,
-        'religion': True if pp.religion==profile.religion else False,
-        'occupation': True if  pp.occupation==profile.occupation else False,
-        "annual_income": True if  pp.annual_income==profile.annual_income else False,
-        'country': True if  pp.country==profile.country else False,
-        "qualification":True if  pp.qualification==profile.qualification else False,
+#         response={
+#         "dateofbirth":True if  int(profile.dateofbirth) in range(int(pp.min_age),int(pp.max_age)) else False,
+#         "height":True if target_profile_index in range(_index['min_height'],_index['max_height']) else False,
+#         'physical_status': True if  pp.physical_status== profile.physical_status else False,
+#         'mother_tongue': True if pp.mother_tongue==profile.mother_tongue else False,
+#         "marital_status": True if  pp.marital_status==profile.marital_status else False,
+#         'religion': True if pp.religion==profile.religion else False,
+#         'occupation': True if  pp.occupation==profile.occupation else False,
+#         "annual_income": True if  pp.annual_income==profile.annual_income else False,
+#         'country': True if  pp.country==profile.country else False,
+#         "qualification":True if  pp.qualification==profile.qualification else False,
         
-        }  
+#         }  
     
-        
-        
-        matched_field=sum([1 for value in response.values() if value is True ])
-        not_match_filed=sum([1 for value in response.values() if value is False ])
         
         
-        number_of_fields=matched_field+not_match_filed
-        try:
-            updated_code=(matched_field*100)//number_of_fields
-        except ZeroDivisionError:
-            updated_code=0
-        collect_profiles.append({"id":pro.id,"matrimony_id":pro.matrimony_id,"percentage":updated_code})
+#         matched_field=sum([1 for value in response.values() if value is True ])
+#         not_match_filed=sum([1 for value in response.values() if value is False ])
         
-    sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
-    # print(sorted_list) 
-    persons=Person.objects.filter(id__in=[i['id'] for i in sorted_list ]).only('id')  
-    serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
-    return Response(serializer.data) 
+        
+#         number_of_fields=matched_field+not_match_filed
+#         try:
+#             updated_code=(matched_field*100)//number_of_fields
+#         except ZeroDivisionError:
+#             updated_code=0
+#         collect_profiles.append({"id":pro.id,"name":pro.name,"percentage":updated_code})
+        
+#     sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
+#     #print(sorted_list)
+#     custom={}
+#     for i in [i['id'] for i in sorted_list ]:
+#         pro=Person.objects.get(id=i)
+#         # print(pro.query)
+#         images=pro.profilemultiimage_set.all()
+#         custom[pro.id]={
+#             "matrimony_id":pro.matrimony_id,
+#             "image":images[0].files.url if images.exists() else None,
+#             "height":pro.height,
+#             "dateofbirth":pro.dateofbirth,
+#             "gender":pro.gender,
+#             "name":pro.name,
+#             "occupation" :pro.occupation,
+#             "city":pro.city,
+#             "state":pro.state,
+#             "qualification":pro.qualification ,
+#             "active_plan":pro.active_plan
+#         }  
+                                
+#     return Response(custom.values())
+
 
 
 
@@ -1647,16 +1800,98 @@ def match_of_the_day(request):
    
     """
     #dec_order=['Diamond',"Gold","Platinum","Silver","Trial"]
+    today=datetime.datetime.today().date()
+    print(today)
+    matchofday=profile.matchofday_set.filter(add_date=today,preference=profile.preference)
     plan_query=~Q(gender=profile.gender) & ~Q(active_plan__in=["Waiting",'Expire'])
-    profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
+    
+    if profile.preference=="region":
+        plan_query=plan_query & Q(region=profile.region,religion=profile.religion)
+        
+    elif profile.preference=="community":
+        plan_query=plan_query & Q(caste=profile.caste,religion=profile.religion)
+        
+    else:
+        plan_query
+    
+   
+   
     
     
-    """most viewed profile"""
-    gender=~Q(view__gender=profile.gender)
-    highest_views=ViewedProfile.objects.filter(gender).vlaues('view').distinct().annotate(viewed=Count("view"))
-    print(highest_views)
+    profiles=Person.objects.filter(plan_query).order_by('active_plan')
+    plan_profile_list=profiles.values_list("id",flat=True)
+   
     
-    # profiles=Person.objects.filter(plan_query).only('id','active_plan').order_by('active_plan')
-    # primium_profiles=[]
-    # for pro in profiles:
-    return Response(profiles.values('id',"matrimony_id",'active_plan'))  
+    response={}
+    if profiles:
+        if matchofday:
+            query=Q(id__in=[i.view for i in matchofday])
+        else:
+            query=Q(id__in=plan_profile_list) & ~Q(id__in=[i.view for i in profile.matchofday_set.all()])
+                
+                
+                
+            
+        persons=Person.objects.filter(query).only('id')[0:4]
+        for pro in persons:
+            images=pro.profilemultiimage_set.all()
+            response[pro.id]={
+                "matrimony_id":pro.matrimony_id,
+                "image":images[0].files.url if images.exists() else None,
+                "height":pro.height,
+                "dateofbirth":pro.dateofbirth,
+                "gender":pro.gender,
+                "name":pro.name,    
+            }  
+            if matchofday.exists()==False:
+                try:
+                    MatchOfDay.objects.get(profile=profile,view=pro.id)
+                except Exception as e:
+                    MatchOfDay.objects.create(profile=profile,view=pro.id,add_date=today,preference=profile.preference)                
+        return Response(response.values())
+    else:
+        """most viewed profile"""
+        
+        # print(highest_views.values_list('view',flat=True))
+        # print(highest_views)
+        if matchofday:
+            query=Q(id__in=[i.view for i in matchofday])
+        else:
+            if profile.preference=="region":
+                gender=~Q(view__gender=profile.gender) & Q(view__region=profile.region,view__religion=profile.religion)
+        
+            elif profile.preference=="community":
+                gender=~Q(view__gender=profile.gender) & Q(view__caste=profile.caste,view__religion=profile.religion)
+        
+            else:
+                gender=~Q(view__gender=profile.gender)
+            
+            
+            #gender=~Q(view__gender=profile.gender)
+            highest_views=ViewedProfile.objects.filter(gender)\
+            .values("view").distinct().annotate(viewed=Count("view")).order_by('-viewed')
+            
+            query=Q(Q(id__in=highest_views.values_list('view',flat=True),) 
+                 & 
+            ~Q(id__in=[i.view for i in profile.matchofday_set.all()])
+            )
+        persons=Person.objects.filter(query).only('id')[0:4]  
+        for pro in persons:
+            images=pro.profilemultiimage_set.all()
+            response[pro.id]={
+                "matrimony_id":pro.matrimony_id,
+                "image":images[0].files.url if images.exists() else None,
+                "height":pro.height,
+                "dateofbirth":pro.dateofbirth,
+                "gender":pro.gender,
+                "name":pro.name,    
+            }  
+            if matchofday.exists()==False:
+                try:
+                    MatchOfDay.objects.get(profile=profile,view=pro.id)
+                except Exception as e:
+                    MatchOfDay.objects.create(profile=profile,view=pro.id,add_date=today,preference=profile.preference) 
+                                    
+        return Response(response.values())
+    
+    

@@ -7,12 +7,11 @@ from age import *
 class Person(models.Model):
 	GENDER=[('Male','Male'),('Female','Female')]
 	MATRIMONY=[
-				('Married','Married'),
-				('UnMarried','UnMarried'),
-				('Widow','Widow'),
-				('widower','widower'),
-				('Divorce','Divorce'),
-				('Ready To Divorce','Ready To Divorce'),
+				
+				('Never Married','Never Married'),
+				('Widowed','Widowed'),
+				('Divorced','Divorced'),
+				('Awaiting Divorce','Awaiting Divorce'),
 				]
 	USER_PLAN=[
 				("Expire","Expire"),("Silver","Silver")
@@ -152,10 +151,21 @@ class ViewedProfile(models.Model):
 	created_date=models.DateTimeField(auto_now=True,auto_now_add=False,null=True)
 	updated_date=models.DateTimeField(auto_now=False,auto_now_add=True,null=True)
 
-class ViewedPhonNumber(models.Model):
-	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
-	view=models.ManyToManyField(Person,related_name="viewphonenumber")
+# class ViewedPhonNumber(models.Model):
+# 	profile=models.OneToOneField(Person,on_delete=models.CASCADE)
+# 	view=models.ManyToManyField(Person,related_name="viewphonenumber")
+ 
+class ViewPhonNumber(models.Model):
+	profile=models.ForeignKey(Person,on_delete=models.CASCADE)
+	view=models.PositiveIntegerField()
+	add_date=models.DateField()
+ 
 
+class MatchOfDay(models.Model):
+	profile=models.ForeignKey(Person,on_delete=models.CASCADE)
+	view=models.PositiveIntegerField(null=True)
+	add_date=models.DateField()
+	preference=models.CharField(max_length=100,null=True)
 
 
 class Partner_Preferences(models.Model):

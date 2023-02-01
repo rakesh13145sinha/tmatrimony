@@ -8,6 +8,7 @@ urlpatterns = [
     path('email/',Check_Email.as_view()),
     path('phone/',Check_Phone_Number.as_view()),
     path('state/',Nation.as_view()),
+    path('religion',PersonReligion.as_view()),
     path('verify/otp/',Validate_OTP.as_view()),
     
     #image upload
@@ -38,7 +39,7 @@ urlpatterns = [
     path('bookmark/show',Album.as_view()),
     path('match/percentage',profile_match_percentage),
     
-    path('custom',custom_matches),
+    #path('custom',custom_matches),
     path('match_of_day',match_of_the_day,name="match of the day"),
     path('tab/',HomeTabs.as_view(),name="home tab"),
     path('banner',Banner.as_view()),
