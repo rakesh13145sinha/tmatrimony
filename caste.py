@@ -822,3 +822,17 @@ Jain=[
 ]
 Parsi=["Irani", "Parsi"]
 Buddhist=["Neo Buddhist","Tibetan Buddhist","Others"]
+
+
+
+Religion=["Hindu", "Muslim", "Christian", "Sikh", "Jain", "Parsi", "Buddhist"]
+Hindus=["Hindi","Bihari","Marathi","Gujarati",
+              "Marwadi","Punjabi","Oriya","Bengali","Assamese",
+              "Rajasthani","Telugu","Kannada","Tamil","Kerala","Sindhi"
+              ]
+Muslims=["Muslim"]
+Christians=["Christians"]
+Sikhs=["Sikhs"]
+Jains=['Jains']
+Parsis=['Parsi']
+Buddhists=['Buddhist']

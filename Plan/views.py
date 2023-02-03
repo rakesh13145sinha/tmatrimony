@@ -2,7 +2,7 @@ import razorpay
 from dotenv import load_dotenv
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from account.models import Person
+
 from .models import *
 from .serializers import *
 from account.models import Person

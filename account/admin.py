@@ -8,8 +8,8 @@ admin.site.register(BannerImage)
 admin.site.register(HomeScreenImage)
 class PersonAdmin(admin.ModelAdmin):
     #list_display=['matrimony_id','name','religion','phone_number',"marital_status",'caste','gender','dosham']
-    list_display=['matrimony_id','name',"marital_status",'gender']
-    list_editable=['marital_status']
+    list_display=['matrimony_id','name',"marital_status",'gender',"height"]
+    list_editable=['marital_status',"height"]
     list_filter=['gender',"marital_status"]
 class FriendRequestsAdmin(admin.ModelAdmin):
     list_display=['requested_matrimony_id','request_status','preference']

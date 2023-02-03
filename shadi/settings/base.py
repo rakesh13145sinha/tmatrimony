@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import os
+from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -103,6 +104,8 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 
 USE_TZ = True
+
+
 
 
 

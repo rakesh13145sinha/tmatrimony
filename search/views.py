@@ -151,8 +151,13 @@ def search_test(request):
         qualification=Q(qualification__in=data['qualification'].split(","))
         query=query & qualification
     
-    if data['annual_income']!="Any":
-        annual_income=Q(annual_income__in=data['annual_income'].split(","))
+    if data['min_income']!="Any":
+        annual_income=Q(annual_income__startswith=data['min_income'])
+        #query.add(annual_income,Q.AND)
+        query=query & annual_income
+        
+    if data['max_income']!="Any":
+        annual_income=Q(annual_income__startswith=data['max_income'])
         #query.add(annual_income,Q.AND)
         query=query & annual_income
     
@@ -182,7 +187,7 @@ def search_test(request):
     if data['qualification']=="Any":
         qualification=Q(qualification__isnull=False)& ~Q(gender=profile.gender)
         query=query & qualification
-    if data['annual_income']=="Any":
+    if data['min_income']=="Any":
         annual_income=Q(annual_income__isnull=False)& ~Q(gender=profile.gender)
         query=query & annual_income
     

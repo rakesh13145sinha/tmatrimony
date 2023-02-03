@@ -21,8 +21,9 @@ from record import *
 # from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
+from account.commanfunc import *
 
-print("This is testing phase. Don't mind it.................")
+# print("This is testing phase. Don't mind it.................")
 
 
 def connection(**kwargs):
@@ -62,23 +63,23 @@ class Banner(APIView):
             return Response({"message":"Banner deleted"}) 
 
 
-"""This function for  view profile check"""
-def ViewedProfiles(matrimonyid,requestid,preference):
-    """self matrimony id"""
-    selfprofile=get_object_or_404(Person,matrimony_id=matrimonyid)
+# """This function for  view profile check"""
+# def ViewedProfiles(matrimonyid,requestid,preference):
+#     """self matrimony id"""
+#     selfprofile=get_object_or_404(Person,matrimony_id=matrimonyid)
     
-    """requested matrimony id"""
-    requested_profile=get_object_or_404(Person,matrimony_id=requestid)
+#     """requested matrimony id"""
+#     requested_profile=get_object_or_404(Person,matrimony_id=requestid)
     
-    view_profile=selfprofile.viewedprofile_set.filter(view=requested_profile,preference=selfprofile.preference)
+#     view_profile=selfprofile.viewedprofile_set.filter(view=requested_profile,preference=selfprofile.preference)
     
                
-    if view_profile.exists():
-        return True
-    else:
-        view_profile=selfprofile.viewedprofile_set \
-        .create(view=requested_profile,preference=selfprofile.preference)
-        return True
+#     if view_profile.exists():
+#         return True
+#     else:
+#         view_profile=selfprofile.viewedprofile_set \
+#         .create(view=requested_profile,preference=selfprofile.preference)
+#         return True
     
     
 
@@ -88,40 +89,40 @@ def ViewedProfiles(matrimonyid,requestid,preference):
 
 
 
-"""VIEW PHONE NUMBERS"""
-"""This function for  view profile check"""
+# """VIEW PHONE NUMBERS"""
+# """This function for  view profile check"""
   
-def ViewedPhoneNumberStatus(matrimonyid,requestid):
+# def ViewedPhoneNumberStatus(matrimonyid,requestid):
     
-    try:
-        view_profile=ViewPhonNumber.objects.get(profile=matrimonyid,view=requestid.id)
-        return True
-    except Exception as e:
-        return False
+#     try:
+#         ViewPhonNumber.objects.get(profile=matrimonyid,view=requestid.id)
+#         return True
+#     except Exception as e:
+#         return False
    
 
-"""check request status"""       
-def connect_status(matrimonyid,requestid):
-    # assert matrimonyid is None ,"matrimony id can't be None"
-    # assert requestid is None ," requested matrimony id can't be None"
-    query=Q(
-        Q(profile__matrimony_id=matrimonyid,requested_matrimony_id=requestid)
-        |
-        Q(profile__matrimony_id=requestid,requested_matrimony_id=matrimonyid)
-    )
-    send_friend_request=FriendRequests.objects.filter(query)
-    if send_friend_request.exists():
-        return {"connect_status":send_friend_request[0].request_status} 
-    else:
-        return {"connect_status":"connect"}   
+# """check request status"""       
+# def connect_status(matrimonyid,requestid):
+#     # assert matrimonyid is None ,"matrimony id can't be None"
+#     # assert requestid is None ," requested matrimony id can't be None"
+#     query=Q(
+#         Q(profile__matrimony_id=matrimonyid,requested_matrimony_id=requestid)
+#         |
+#         Q(profile__matrimony_id=requestid,requested_matrimony_id=matrimonyid)
+#     )
+#     send_friend_request=FriendRequests.objects.filter(query)
+#     if send_friend_request.exists():
+#         return {"connect_status":send_friend_request[0].request_status} 
+#     else:
+#         return {"connect_status":"connect"}   
         
-def height_and_age(h,age=None):
+# def height_and_age(h,age=None):
    
-    if h is not None:
-        return {'height':height(h)}   
+#     if h is not None:
+#         return {'height':height(h)}   
     
-    elif h is None:
-        return {'height':None}
+#     elif h is None:
+#         return {'height':None}
 
 
 
@@ -202,15 +203,50 @@ class Check_Email(APIView):
 class Nation(APIView):
     def get(self,request):
         query=request.GET.get('q')
-        response={}
+
         if query is not None:
+            
+            Headers = {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJyYWtlc2hzaW5oYTgyOTJAZ21haWwuY29tIiwiYXBpX3Rva2VuIjoiTktUaGVCODNnSUhBNDA0M014Tml1b0xPM1o2X3FvNEJyNkJMcDBfSE9aQ3gzYk1HMHRIaHVDUHpVUkptRi1TdTdLNCJ9LCJleHAiOjE2NzU0MDk0NDB9.a11jSGQE3Ld2WufJgkYJM1b1VPFYqCK3Kza2fzEo1KU",
+                    "Accept": "application/json" 
+                    }
+            
+            
+            """this is state of city"""
+            req = requests.get("https://www.universal-tutorial.com/api/cities/"+query,headers=Headers);
+            print(req.status_code)
+            if req.status_code==200:
+                return Response(req.json())
+            elif req.status_code==500:
+                GenHeaders = {"Accept": "application/json",
+                    "api-token": "NKTheB83gIHA4043MxNiuoLO3Z6_qo4Br6BLp0_HOZCx3bMG0tHhuCPzURJmF-Su7K4",
+                    "user-email": "rakeshsinha8292@gmail.com" 
+                    }
+                """new token generate"""
+                req = requests.get("https://www.universal-tutorial.com/api/getaccesstoken",headers=GenHeaders);
+                if req.status_code ==200:
+                    authtoken=req.json()
+                    Headers = {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer"+" "+ authtoken['auth_token'],
+                    "Accept": "application/json" 
+                    }
+                    req = requests.get("https://www.universal-tutorial.com/api/cities/"+query,headers=Headers);
+            
+                    if req.status_code==200:
+                        return Response(req.json())
+                    
+                    
+                else:
+                    return Response({"message":"wait for solve this issue"},status=500)   
             # cities=City.objects.filter(state__name=query)
-            if query=="Telangana":
-                return Response([{"name":city} for city in telangana]) 
-            elif query=="Andhra Pradesh": 
-                return Response([{"name":city} for city in andhara])
-            else:
-                return Response([])  
+            # if query=="Telangana":
+            #     return Response([{"name":city} for city in telangana]) 
+            # elif query=="Andhra Pradesh": 
+            #     return Response([{"name":city} for city in andhara])
+            # else:
+            #     return Response([])  
         else:
             
             web=requests.get('https://www.britannica.com/topic/list-of-cities-and-towns-in-India-2033033')
@@ -234,25 +270,102 @@ class PersonReligion(APIView):
         if query is not None:
             # cities=City.objects.filter(state__name=query)
             if query=="Hindu":
-                return Response([{"name":caste} for caste in Hindu]) 
-            elif query=="Muslim": 
-                return Response([{"name":caste} for caste in Muslim])
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Hindu],
+                    "region":[{"name":re} for re in Hindus]
+                    
+                }
+                return Response(response,status=200) 
+            elif query=="Muslim":
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Muslim],
+                    "region":[{"name":re} for re in Muslims]
+                    
+                }
+                return Response(response,status=200) 
+                
             elif query=="Christian": 
-                return Response([{"name":caste} for caste in Christian])
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Christian],
+                    "region":[{"name":re} for re in Christians]
+                    
+                }
+                return Response(response,status=200) 
+                
             if query=="Sikh":
-                return Response([{"name":caste} for caste in Sikh]) 
-            elif query=="Jain": 
-                return Response([{"name":caste} for caste in Jain])
-            elif query=="Parsi": 
-                return Response([{"name":caste} for caste in Parsi])
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Sikh],
+                    "region":[{"name":re} for re in Sikhs]
+                    
+                }
+                return Response(response,status=200) 
+                
+            elif query=="Jain":
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Jain],
+                    "region":[{"name":re} for re in Jains]
+                    
+                }
+                return Response(response,status=200)  
+                
+            elif query=="Parsi":
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Parsi],
+                    "region":[{"name":re} for re in Parsis]
+                    
+                }
+                return Response(response,status=200)   
+                
             elif query=="Buddhist": 
-                return Response([{"name":caste} for caste in Buddhist])
+                response={
+                    "result":query,
+                    "caste":[{"name":caste} for caste in Buddhist],
+                    "region":[{"name":re} for re in Buddhists]
+                    
+                }
+                return Response(response,status=200)  
             
             else:
                 return Response({"message":"worng query enterd connect with developer"})  
         else:
             return Response([{"name":reg} for reg in Religion]) 
 
+@api_view(['GET'])
+def religion_by_caste(request):
+    query=request.GET.get('q')
+    response={}
+    if query is not None:
+       
+        if query=="Hindu":
+            return Response([{"name":caste} for caste in Hindu],status=200) 
+        elif query=="Muslim":
+            return Response([{"name":caste} for caste in Muslim],status=200) 
+            
+        elif query=="Christian": 
+            return Response([{"name":caste} for caste in Christian],status=200) 
+            
+        if query=="Sikh":
+            return Response([{"name":caste} for caste in Sikh],status=200) 
+            
+        elif query=="Jain":
+            return Response([{"name":caste} for caste in Jain],status=200)  
+            
+        elif query=="Parsi":
+            return Response([{"name":caste} for caste in Parsi],status=200)   
+            
+        elif query=="Buddhist": 
+            return Response([{"name":caste} for caste in Buddhist],status=200)  
+        
+        else:
+            return Response({"message":"worng query enterd connect with developer"})  
+    else:
+        return Response([{"name":reg} for reg in Religion]) 
 
 ########################PROFILE API#################################               
 """Single Profile get"""
@@ -765,6 +878,8 @@ def home_landing_page(request):
         
       
     for obj in region_profiles[0:4]:
+        
+            
         try:
             image=obj.profilemultiimage_set.first()
             region[obj.id]={"image":image.files.url}
@@ -883,11 +998,11 @@ def profile_match_percentage(request):
     pp=Partner_Preferences.objects.get(profile=target_profile)
     
     _height_list=[
-    "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
-    "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
-    "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
-    "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
-    "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+    "3ft 1in","3ft2in","3ft 3in","3ft 4in","3ft 5in","3ft 6in","3ft 7in","3ft 8in","3ft 9in","3ft 10in","3ft 11in","4ft", 
+    "4ft 1in","4ft 2in","4ft 3in","4ft 4in","4ft 5in","4ft 6in","4ft 7in","4ft 8in","4ft 9in","4ft 10in","4ft 11in","5ft" , 
+    "5ft 1in","5ft 2in","5ft 3in","5ft 4in","5ft 5in","5ft 6in","5ft 7in","5ft 8in","5ft 9in","5ft 10in","5ft 11in","6ft",
+    "6ft 1in","6ft 2in","6ft 3in","6ft 4in","6ft 5in","6ft 6in","6ft 7in","6ft 8in","6ft 9in","6ft 10in","6ft 11in","7ft",
+    "7ft 1in","7ft 2in","7ft 3in","7ft 4in","7ft 5in","7ft 6in","7ft 7in","7ft 8in","7ft 9in","7ft 10in","7ft 11in","8ft"
         
         ]
     
@@ -1547,13 +1662,13 @@ class HomeTabs(APIView):
                 )
         elif _q=="custom":
             _height_list=[
-            "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
-            "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
-            "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
-            "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
-            "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+                "3ft 1in","3ft 2in","3ft 3in","3ft 4in","3ft 5in","3ft 6in","3ft 7in","3ft 8in","3ft 9in","3ft 10in","3ft 11in","4ft", 
+                "4ft 1in","4ft 2in","4ft 3in","4ft 4in","4ft 5in","4ft 6in","4ft 7in","4ft 8in","4ft 9in","4ft 10in","4ft 11in","5ft" , 
+                "5ft 1in","5ft 2in","5ft 3in","5ft 4in","5ft 5in","5ft 6in","5ft 7in","5ft 8in","5ft 9in","5ft 10in","5ft 11in","6ft",
+                "6ft 1in","6ft 2in","6ft 3in","6ft 4in","6ft 5in","6ft 6in","6ft 7in","6ft 8in","6ft 9in","6ft 10in","6ft 11in","7ft",
+                "7ft 1in","7ft 2in","7ft 3in","7ft 4in","7ft 5in","7ft 6in","7ft 7in","7ft 8in","7ft 9in","7ft 10in","7ft 11in","8ft"
         
-            ]
+                        ]
             if person.preference=="region":
                 query=query & Q(region=person.region,religion=person.religion)
                
@@ -1609,7 +1724,7 @@ class HomeTabs(APIView):
                 images=pro.profilemultiimage_set.all()
                 custom[pro.id]={
                     "matrimony_id":pro.matrimony_id,
-                    "profileimage":[{"image":images[0].files.url if images.exists() else None} ],
+                    "profileimage":[{"image":images[0].files.url if images.exists() else None}],
                     "height":pro.height,
                     "dateofbirth":pro.dateofbirth,
                     "gender":pro.gender,
@@ -1617,6 +1732,7 @@ class HomeTabs(APIView):
                     "occupation" :pro.occupation,
                     "city":pro.city,
                     "state":pro.state,
+                    "country":pro.country,
                     "qualification":pro.qualification ,
                     "active_plan":pro.active_plan,
                     

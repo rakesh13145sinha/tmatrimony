@@ -3,13 +3,16 @@ from django.dispatch import receiver
 from .models import Person,Partner_Preferences,SaveOTP
 from .send_otp import sending_otp
 import random
-from age import *
+from account.commanfunc import get_age
+
+
+
 
 
 def create_partner_preferance(pk):
     pp=Person.objects.get(id=pk)
     _,created=Partner_Preferences.objects.get_or_create(profile= pp,min_age= "18",  \
-                 max_age="40",min_height="4'0''", max_height="7'0''",  \
+                 max_age="40",min_height="4ft", max_height="7ft",  \
                  physical_status="Any", mother_tongue="Any",  \
                  marital_status="Any", drinking_habbit="Any",  \
                  smoking_habbit="Any",food="Any",  \

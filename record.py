@@ -12,7 +12,6 @@
 # andhara=['Visakhapatnam', 'Vijayawada', 'Krishna', 'Guntur', 'Nellore', 'Kurnool', 'Kadapa', 'Rajahmundry', 'East Godavari', 
 #         'Kakinada', 'Tirupati', 'Chittor', 'Eluru', 'West GodavariVisakhapatnam']
 
-# Religion=["Hindu", "Muslim", "Christian", "Sikh", "Jain", "Parsi", "Buddhist"]
 
 
 # from account.models import Country,State,City

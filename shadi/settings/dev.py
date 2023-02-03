@@ -1,12 +1,12 @@
 from .base import *
-from decouple import config
+
 
 SECRET_KEY =config('DEV_SECRET_KEY')
 
 
 ALLOWED_HOSTS=[str(host) for host in config('DEV_ALLOWED_HOSTS').split(",")]
 
-DEBUG=True
+DEBUG=config('DEBUG')
 
 STATIC_URL='/static/'
 MEDIA_URL='media/'

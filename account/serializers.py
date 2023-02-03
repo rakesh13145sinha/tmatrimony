@@ -1,40 +1,42 @@
 from rest_framework import serializers
+
+from account.commanfunc import *
 from .models import *
 import uuid
 from django.contrib.auth.models import User
 import string
 import random
-from age import *
+
 from django.db.models import Q
 
+# def height(string):
+#     c=string.split("'")[:2]
+#     c_s=c[0]+"."+c[1]
+#     return c_s
 
 
-def connect_status(matrimonyid,requestid):
-    # assert matrimonyid is None ,"matrimony id can't be None"
-    # assert requestid is None ," requested matrimony id can't be None"
-    query=Q(
-        Q(profile__matrimony_id=matrimonyid,requested_matrimony_id=requestid)
-        |
-        Q(profile__matrimony_id=requestid,requested_matrimony_id=matrimonyid)
-    )
-    send_friend_request=FriendRequests.objects.filter(query)
-    if send_friend_request:
-        return send_friend_request[0].request_status
-    else:
-        return "connect"
+# def connect_status_(matrimonyid,requestid):
+#     # assert matrimonyid is None ,"matrimony id can't be None"
+#     # assert requestid is None ," requested matrimony id can't be None"
+#     query=Q(
+#         Q(profile__matrimony_id=matrimonyid,requested_matrimony_id=requestid)
+#         |
+#         Q(profile__matrimony_id=requestid,requested_matrimony_id=matrimonyid)
+#     )
+#     send_friend_request=FriendRequests.objects.filter(query)
+#     if send_friend_request:
+#         return send_friend_request[0].request_status
+#     else:
+#         return "connect"
 
 
-def ViewedPhoneNumberStatus(matrimonyid,requestid):
+# def ViewedPhoneNumberStatus(matrimonyid,requestid):
     
-    try:
-        view_profile=ViewedPhonNumber.objects.get(profile=matrimonyid)
-        check_phone_number=view_profile.view.filter(id=requestid.id)
-        if check_phone_number:
-            return True
-        else:
-            return False
-    except Exception as e:
-        return False
+#     try:
+#         ViewPhonNumber.objects.get(profile=matrimonyid,view=requestid.id)
+#         return True
+#     except Exception as e:
+#         return False
 
 
 
@@ -131,7 +133,7 @@ class TabPersonSerializer(serializers.ModelSerializer):
         images=obj.profilemultiimage_set.all()
         return [{"image":image.files.url  if image.files else None } for image in images ] 
     def get_connect_status(self,obj):
-        status=connect_status(self.context['matrimony_id'],obj.matrimony_id)
+        status=connect_status_(self.context['matrimony_id'],obj.matrimony_id)
         return status
     
     def get_album_status(self,obj):
@@ -147,7 +149,7 @@ class TabPersonSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
        
-        representation['height'] =height(instance.height)
+        # representation['height'] =height(instance.height)
         representation['phone_status'] =ViewedPhoneNumberStatus(instance.matrimony_id,self.context['matrimony_id'])
         
         return representation                                   
@@ -160,7 +162,7 @@ class TabPersonSerializer(serializers.ModelSerializer):
                 'phone_number','occupation',
                 'qualification','caste','country',
                 "active_plan","profileimage",'connect_status',"album_status",
-                'profile_created_by','dateofbirth',"active_plan",'region','caste']
+                'profile_created_by','dateofbirth',"active_plan",'region','caste','height']
         
         
 
