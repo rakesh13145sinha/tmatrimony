@@ -149,7 +149,7 @@ def take_free_trial(request):
 				
 				
     if profile.active_plan not in _taken_plan:
-        return Response({"message":"You have already one plan"},status=200)
+        return Response({"message":"You have already trial plan"},status=200)
     
     
     india=pytz.timezone('Asia/Kolkata')
