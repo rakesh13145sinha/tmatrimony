@@ -1,14 +1,10 @@
-
-
 from .base import *
-
-
 SECRET_KEY =config('DEV_SECRET_KEY')
 
 
-ALLOWED_HOSTS=[str(host) for host in config('DEV_ALLOWED_HOSTS').split(",")]
+ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
 
-DEBUG=config('DEBUG')
+DEBUG=config('PRODUCTION_DEBUG')
 
 
 
@@ -17,11 +13,11 @@ DEBUG=config('DEBUG')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':config('NAME'),
-        'USER': config('USER'),
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT': config('PORT')
+        'NAME':config('PRO_DB_NAME'),
+        'USER': config('PRO_DB_USER'),
+        'PASSWORD': config('PRO_DB_PASSWORD'),
+        'HOST': config('PRO_DB_HOST'),
+        'PORT': config('PRO_DB_PORT')
         }
    
            
