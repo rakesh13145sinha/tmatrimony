@@ -3,7 +3,10 @@ from pathlib import Path
 import os
 from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+import environ
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Application definition
 
