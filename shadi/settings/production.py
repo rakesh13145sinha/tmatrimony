@@ -3,11 +3,6 @@ from .base import *
 
 SECRET_KEY=config('PRODUCTION_SECRET_KEY')
 ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
-print(ALLOWED_HOSTS)
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-print(ALLOWED_HOSTS)
-print(SECRET_KEY)
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 DEBUG=config('PRODUCTION_DEBUG')
 
 
