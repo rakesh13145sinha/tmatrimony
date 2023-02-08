@@ -1,10 +1,10 @@
 from .base import *
 
 
-SECRET_KEY=env('PRODUCTION_SECRET_KEY')
-ALLOWED_HOSTS=[str(host) for host in env('PRODUCTION_ALLOWED_HOSTS').split(",")]
+SECRET_KEY=config('PRODUCTION_SECRET_KEY')
+ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
 
-DEBUG=env('PRODUCTION_DEBUG')
+DEBUG=config('PRODUCTION_DEBUG')
 
 
 
@@ -13,11 +13,11 @@ DEBUG=env('PRODUCTION_DEBUG')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':env('PRO_DB_NAME'),
-        'USER': env('PRO_DB_USER'),
-        'PASSWORD': env('PRO_DB_PASSWORD'),
-        'HOST': env('PRO_DB_HOST'),
-        'PORT': env('PRO_DB_PORT')
+        'NAME':config('PRO_DB_NAME'),
+        'USER': config('PRO_DB_USER'),
+        'PASSWORD': config('PRO_DB_PASSWORD'),
+        'HOST': config('PRO_DB_HOST'),
+        'PORT': config('PRO_DB_PORT')
         }
    
            
@@ -40,10 +40,10 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media_dir')
 
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ALLOWED_ORIGINS=env('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
-CORS_ORIGIN_WHITELIST = env('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
+CORS_ALLOWED_ORIGINS=config('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
+CORS_ORIGIN_WHITELIST = config('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = env('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
+CSRF_TRUSTED_ORIGINS = config('WHITE_LIST', cast=lambda v: [s.strip() for s in v.split(',')])
 CORS_ALLOW_METHODS = ["DELETE","GET","OPTIONS","PATCH","POST","PUT"]
 CORS_ALLOW_HEADERS = ["accept","accept-encoding","authorization","content-type","dnt","origin",
     "user-agent","x-csrftoken","x-requested-with","Jwt"]
