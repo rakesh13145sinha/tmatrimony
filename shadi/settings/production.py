@@ -1,7 +1,7 @@
 from .base import *
 
 
-SECRET_KEY=os.getenv('PRODUCTION_SECRET_KEY')
+SECRET_KEY=os.environ('PRODUCTION_SECRET_KEY')
 ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
 DEBUG=config('PRODUCTION_DEBUG')
 
