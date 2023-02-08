@@ -1,13 +1,11 @@
-from sendotp import sendotp
 import requests
-import urllib
 import urllib.parse
-import os
-from dotenv import load_dotenv
-load_dotenv('.env')
-template_id=os.environ.get("template_id")
-access_key =os.environ.get("access_key")
 from .models import SaveOTP 
+
+from decouple import config
+template_id=config("template_id")
+access_key =config("access_key")
+
 
 def save_otp(otp,phone):
     getotp=SaveOTP.objects.filter(phone_number=phone)
