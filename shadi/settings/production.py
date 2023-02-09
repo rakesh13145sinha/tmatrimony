@@ -11,7 +11,8 @@ print(config('PRODUCTION_DEBUG'))
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print([str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")])
 print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
+#ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
+ALLOWED_HOSTS=['18.60.228.179']
 
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print(config('PRODUCTION_SECRET_KEY'))
