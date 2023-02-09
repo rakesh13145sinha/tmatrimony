@@ -1,9 +1,9 @@
 from .base import *
 
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-print(os.environ['PRODUCTION_SECRET_KEY'])
+print(config('PRODUCTION_SECRET_KEY'))
 print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-SECRET_KEY=os.environ['PRODUCTION_SECRET_KEY']
+SECRET_KEY=config('PRODUCTION_SECRET_KEY')
 
 ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
 
