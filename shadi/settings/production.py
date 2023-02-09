@@ -8,40 +8,38 @@ from .base import *
 
 
 
-# print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-# print([str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")])
-# print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-# #ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
-# ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+print([str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")])
+print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+#ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
+ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
 
-# print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-# print(config('PRODUCTION_SECRET_KEY'))
-# print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-# SECRET_KEY=config('PRODUCTION_SECRET_KEY')
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+print(config('PRODUCTION_SECRET_KEY'))
+print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+SECRET_KEY=config('PRODUCTION_SECRET_KEY')
 
 
 DEBUG=True
 
-ALLOWED_HOSTS=['18.60.217.96']
 
-SECRET_KEY='$j6wor$w23l%_sslus)ro4$4b&a37oww)-#$b9^dg@%%#*s_p!'
 
 
 
 # SERVER Database
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME':config('PRO_DB_NAME'),
-#         'USER': config('PRO_DB_USER'),
-#         'PASSWORD': config('PRO_DB_PASSWORD'),
-#         'HOST': config('PRO_DB_HOST'),
-#         'PORT': config('PRO_DB_PORT')
-#         }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME':config('PRO_DB_NAME'),
+        'USER': config('PRO_DB_USER'),
+        'PASSWORD': config('PRO_DB_PASSWORD'),
+        'HOST': config('PRO_DB_HOST'),
+        'PORT': config('PRO_DB_PORT')
+        }
    
            
-# }
+}
 
 STATIC_URL='/static/'
 STATIC_ROOT=os.path.join(BASE_DIR,'static_dir')
