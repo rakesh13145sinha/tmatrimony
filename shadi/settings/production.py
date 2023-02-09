@@ -1,6 +1,10 @@
 from .base import *
 
 
+DEBUG=config('PRODUCTION_DEBUG')
+print(config('PRODUCTION_DEBUG'))
+
+
 
 
 
@@ -15,8 +19,7 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 SECRET_KEY=config('PRODUCTION_SECRET_KEY')
 
 
-DEBUG=config('PRODUCTION_DEBUG')
-print(config('PRODUCTION_DEBUG'))
+
 
 
 # SERVER Database
