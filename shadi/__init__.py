@@ -1,1 +1,1 @@
-from .base import *
+from shadi.settings.base import *
