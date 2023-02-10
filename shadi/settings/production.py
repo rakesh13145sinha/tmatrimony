@@ -2,18 +2,7 @@ from .base import *
 
 
 DEBUG=config('PRODUCTION_DEBUG')
-
-
-
-
-
-
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-
 ALLOWED_HOSTS=[str(host) for host in config('PRODUCTION_ALLOWED_HOSTS').split(",")]
-
-
-print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 SECRET_KEY=config('PRODUCTION_SECRET_KEY')
 
 # SERVER Database
@@ -37,12 +26,12 @@ MEDIA_URL='media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media_dir')
 
 
-# CSRF_COOKIE_SECURE=True
-# SESSION_COOKIE_SECURE=True
-# SECURE_SSL_REDIRECT=True
-# SECURE_HSTS_SECONDS=True
-# SECURE_HSTS_INCLUDE_SUBDOMAINS=True
-# SECURE_HSTS_PRELOAD=True
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+SECURE_SSL_REDIRECT=True
+SECURE_HSTS_SECONDS=True
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+SECURE_HSTS_PRELOAD=True
 
 
 
