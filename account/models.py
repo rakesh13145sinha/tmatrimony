@@ -66,7 +66,7 @@ class Person(models.Model):
 #profession & education
 	occupation = models.CharField(max_length=100,null=True)#working as
 	annual_income = models.CharField(max_length=100,null=True)
-	#job_sector = models.CharField(max_length=100,null=True)
+	job_sector = models.CharField(max_length=100,null=True)
 	#college	= models.CharField(max_length=100,null=True)
 	#orgnisation=models.CharField(max_length=255,null=True)
 	qualification	= models.CharField(max_length=100,null=True)
