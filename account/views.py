@@ -2113,6 +2113,21 @@ def match_of_the_day(request):
                     MatchOfDay.objects.get(profile=profile,view=pro.id)
                 except Exception as e:
                     MatchOfDay.objects.create(profile=profile,view=pro.id,add_date=today,preference=profile.preference) 
+        
+        if len(persons)<=0:
+            past_profiles=profile.matchofday_set.filter(preference=profile.preference).order_by('add_date')[:4]
+            persons=Person.objects.filter(id__in=past_profiles.values_list('view',flat=True))
+            for pro in persons:
+                images=pro.profilemultiimage_set.all()
+                response[pro.id]={
+                    "matrimony_id":pro.matrimony_id,
+                    "image":images[0].files.url if images.exists() else None,
+                    "height":pro.height,
+                    "dateofbirth":pro.dateofbirth,
+                    "gender":pro.gender,
+                    "name":pro.name,    
+                } 
+            
                                     
         return Response(response.values())
     
