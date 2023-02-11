@@ -160,7 +160,7 @@ class TabPersonSerializer(serializers.ModelSerializer):
         fields=['matrimony_id','name',
                 'city','state','about_myself',
                 'phone_number','occupation',
-                'qualification','caste','country',
+                'qualification','caste','country',"job_sector",
                 "active_plan","profileimage",'connect_status',"album_status",
                 'profile_created_by','dateofbirth',"active_plan",'region','caste','height']
         
