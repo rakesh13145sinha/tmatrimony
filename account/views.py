@@ -554,14 +554,18 @@ class Registration(APIView):
         data=request.data 
 
         serializers=PersonSerializers(data=data)
+        print("====================")
         print(data)
+        print("====================")
         if serializers.is_valid():
             serializers.save()
             return Response({"message":config("Profile_Created"),
                              "phone_number":data['phone_number']
                              })
         else:
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             print(serializers.errors)
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             return Response(serializers.errors,status=400)
     
     def put(self,request):
