@@ -1480,12 +1480,15 @@ def view_phone_nunmber(request):
 """Partner Preference"""
 class PartnerPreference(APIView):
     def get(self,request):
-        pp=Partner_Preferences.objects.select_related('profile').filter(profile__matrimony_id=request.GET['matrimony_id'])
-        if pp.exists():
-            serializers=PPSerializer(pp[0],many=False)
-            return Response(serializers.data)       
-        else:
-            return Response({"message":"No any Preferace Yet!"})    
+        try:
+            pp=Partner_Preferences.objects.select_related('profile').get(profile__matrimony_id=request.GET['matrimony_id'])
+        except Exception as e:
+            print(str(e))
+            return Response({"message":"connect with developer"},status=200)
+        
+        serializers=PPSerializer(pp,many=False)
+        return Response(serializers.data)       
+          
     
     
             
