@@ -1,9 +1,12 @@
-from collections import ChainMap
-import os
-import random
 #from datetime import datetime ,date,timedelta
 import datetime
-import pytz 
+import os
+import random
+from collections import ChainMap
+from itertools import chain
+
+import pytz
+import requests
 from decouple import config
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
@@ -11,20 +14,16 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from itertools import chain
+
+from account.commanfunc import *
 from age import *
 from caste import *
+from connect.status import *
+from record import *
+
 from .models import *
 from .send_otp import *
 from .serializers import *
-from connect.status import *
-from record import *
-# from selenium import webdriver
-from bs4 import BeautifulSoup
-import requests
-from account.commanfunc import *
-
-# print("This is testing phase. Don't mind it.................")
 
 
 def connection(**kwargs):
@@ -62,68 +61,6 @@ class Banner(APIView):
             BannerImage.objects.get(id=bannerid).delete() 
         except Exception as e:
             return Response({"message":"Banner deleted"}) 
-
-
-# """This function for  view profile check"""
-# def ViewedProfiles(matrimonyid,requestid,preference):
-#     """self matrimony id"""
-#     selfprofile=get_object_or_404(Person,matrimony_id=matrimonyid)
-    
-#     """requested matrimony id"""
-#     requested_profile=get_object_or_404(Person,matrimony_id=requestid)
-    
-#     view_profile=selfprofile.viewedprofile_set.filter(view=requested_profile,preference=selfprofile.preference)
-    
-               
-#     if view_profile.exists():
-#         return True
-#     else:
-#         view_profile=selfprofile.viewedprofile_set \
-#         .create(view=requested_profile,preference=selfprofile.preference)
-#         return True
-    
-    
-
-
-
-
-
-
-
-# """VIEW PHONE NUMBERS"""
-# """This function for  view profile check"""
-  
-# def ViewedPhoneNumberStatus(matrimonyid,requestid):
-    
-#     try:
-#         ViewPhonNumber.objects.get(profile=matrimonyid,view=requestid.id)
-#         return True
-#     except Exception as e:
-#         return False
-   
-
-# """check request status"""       
-# def connect_status(matrimonyid,requestid):
-#     # assert matrimonyid is None ,"matrimony id can't be None"
-#     # assert requestid is None ," requested matrimony id can't be None"
-#     query=Q(
-#         Q(profile__matrimony_id=matrimonyid,requested_matrimony_id=requestid)
-#         |
-#         Q(profile__matrimony_id=requestid,requested_matrimony_id=matrimonyid)
-#     )
-#     send_friend_request=FriendRequests.objects.filter(query)
-#     if send_friend_request.exists():
-#         return {"connect_status":send_friend_request[0].request_status} 
-#     else:
-#         return {"connect_status":"connect"}   
-        
-# def height_and_age(h,age=None):
-   
-#     if h is not None:
-#         return {'height':height(h)}   
-    
-#     elif h is None:
-#         return {'height':None}
 
 
 
@@ -1195,9 +1132,28 @@ class ProfileUpdatePercentage(APIView):
         for i in _list:
             del change_into_dict[i]
         count=len( list (filter(lambda x:x!=None,change_into_dict.values())))
-        percentage=(count*100)//len(change_into_dict) 
+        not_none_field_count=len(change_into_dict)
+         
+        # percentage=(count*100)//len(change_into_dict) 
         
         images=ProfileMultiImage.objects.select_related('profile').filter(profile__matrimony_id=matrimonyid)
+        if change_into_dict['degree']=="ug":
+            if images:
+                count=count+1
+            else:
+                count=count-1
+            percentage=(count*100)//not_none_field_count
+        else:
+            if images:
+                pass
+            else:
+                count=count-1
+            percentage=(count*100)//not_none_field_count
+        
+        
+        
+        
+        
         data={
             "profileimage":images[0].files.url if images.exists() else None,
             "matrimony_id":matrimonyid,
