@@ -68,11 +68,11 @@ def search_test(request):
     
     
     _height_list=[
-    "3'1''","3'2''","3'3''","3'4''","3'5''","3'6''","3'7''","3'8''","3'9''","3'10''","3'11''","4'0''" , 
-    "4'1''","4'2''","4'3''","4'4''","4'5''","4'6''","4'7''","4'8''","4'9''","4'10''","4'11''","5'0''" , 
-    "5'1''","5'2''","5'3''","5'4''","5'5''","5'6''","5'7''","5'8''","5'9''","5'10''","5'11''","6'0''",
-    "6'1''","6'2''","6'3''","6'4''","6'5''","6'6''","6'7''","6'8''","6'9''","6'10''","6'11''","7'0''",
-    "7'1''","7'2''","7'3''","7'4''","7'5''","7'6''","7'7''","7'8''","7'9''","7'10''","7'11''","8'0''"
+    "3ft 1in","3ft2in","3ft 3in","3ft 4in","3ft 5in","3ft 6in","3ft 7in","3ft 8in","3ft 9in","3ft 10in","3ft 11in","4ft", 
+    "4ft 1in","4ft 2in","4ft 3in","4ft 4in","4ft 5in","4ft 6in","4ft 7in","4ft 8in","4ft 9in","4ft 10in","4ft 11in","5ft" , 
+    "5ft 1in","5ft 2in","5ft 3in","5ft 4in","5ft 5in","5ft 6in","5ft 7in","5ft 8in","5ft 9in","5ft 10in","5ft 11in","6ft",
+    "6ft 1in","6ft 2in","6ft 3in","6ft 4in","6ft 5in","6ft 6in","6ft 7in","6ft 8in","6ft 9in","6ft 10in","6ft 11in","7ft",
+    "7ft 1in","7ft 2in","7ft 3in","7ft 4in","7ft 5in","7ft 6in","7ft 7in","7ft 8in","7ft 9in","7ft 10in","7ft 11in","8ft"
         
         ]
     
@@ -149,15 +149,12 @@ def search_test(request):
         qualification=Q(qualification__in=data['qualification'].split(","))
         query=query & qualification
     
-    if data['min_income']!="Any":
-        annual_income=Q(annual_income__startswith=data['min_income'])
+    if data['min_income']!="Any" and data['max_income']!="Any":
+        annual_income=Q(min_income__range=(int(data['min_income']),int(data['max_income']) ))
         #query.add(annual_income,Q.AND)
         query=query & annual_income
         
-    if data['max_income']!="Any":
-        annual_income=Q(annual_income__startswith=data['max_income'])
-        #query.add(annual_income,Q.AND)
-        query=query & annual_income
+    
     
     #religious base filter
     
@@ -224,34 +221,14 @@ def search_test(request):
         city=Q(city__isnull=False)& ~Q(gender=profile.gender)
         query=query & city
     
+
     
+    persons=Person.objects.filter(query).only('id').order_by('-reg_update')
+        
+    serializer=TabPersonSerializer(persons, context={'matrimony_id':logged_matrimony_id},many=True)                         
+    return Response(serializer.data)
     
-    
-     
-    response={}
-    r_profile=Person.objects.filter(query).only('id').order_by('-reg_date')
-    
-    for r_pro in r_profile:
-       
-        response[r_pro.id]={
-            "matrimony_id":r_pro.matrimony_id,
-            "profileimage":[{"image":r_pro.profilemultiimage_set.latest('id').files.url if r_pro.profilemultiimage_set.all() else None}],
-            "height":r_pro.height,
-            "dateofbirth":r_pro.dateofbirth,
-            "gender":r_pro.gender,
-            "name":r_pro.name,
-            "phone_number":r_pro.phone_number,
-            "occupation" :r_pro.occupation,
-            "city":r_pro.city,
-            "state":r_pro.state,
-            "qualification":r_pro.qualification ,
-            "active_plan":r_pro.active_plan
-            
-        }
-        response[r_pro.id].update(connect_status(logged_matrimony_id,r_pro.matrimony_id))
-    
-    
-    return Response(response.values(),status=200)    
+   
     
     
 
