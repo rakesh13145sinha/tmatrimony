@@ -1653,7 +1653,7 @@ class HomeTabs(APIView):
             query=Q(id__in=mutual_match(matrimonyid))
         
         elif _q=="saw":
-            view_profile=person.viewedprofile_set.filter(preference=person.preference).order_by('updated_date')
+            view_profile=person.viewedprofile_set.filter(preference=person.preference).order_by('-updated_date')
             if view_profile.exists():
                 #query=query & Q(id__in= view_profile.values_list('view__id',flat=True))
                 viewed_list=[]
@@ -1666,7 +1666,7 @@ class HomeTabs(APIView):
                 return Response([],status=200)
         elif _q=="viewed":
             viewed_list=[]
-            view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference).order_by('updated_date')
+            view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference).order_by('-updated_date')
             #query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
             
             for i in view_profile.values_list('profile__id',flat=True):
