@@ -1482,7 +1482,7 @@ class PartnerPreference(APIView):
     def get(self,request):
         pp=Partner_Preferences.objects.select_related('profile').filter(profile__matrimony_id=request.GET['matrimony_id'])
         if pp.exists():
-            serializers=PPSerializers(pp[0],many=False)
+            serializers=PPSerializer(pp[0],many=False)
             return Response(serializers.data)       
         else:
             return Response({"message":"No any Preferace Yet!"})    
@@ -1497,7 +1497,7 @@ class PartnerPreference(APIView):
               
         data['profile']=pp.profile.id
            
-        serializers=PPSerializers(pp,data=data,partial=True)
+        serializers=PPSerializer(pp,data=data,partial=True)
         if serializers.is_valid():
             serializers.save()
             return Response({"message":"Partner Preferance Updated successfully","status":True},status=200)
