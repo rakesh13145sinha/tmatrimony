@@ -1656,7 +1656,8 @@ class HomeTabs(APIView):
                
             elif person.preference=="community":
                 query=query & Q(caste=person.caste,religion=person.religion)
-            query=Q(id__in=mutual_match(matrimonyid))
+            
+            query=query & Q(id__in=mutual_match(matrimonyid))
         
         elif _q=="saw":
             view_profile=person.viewedprofile_set.filter(preference=person.preference).order_by('-updated_date')

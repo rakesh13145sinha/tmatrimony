@@ -222,7 +222,7 @@ def search_test(request):
         query=query & city
     
 
-    
+    print(data)
     persons=Person.objects.filter(query).only('id').order_by('-reg_update')
         
     serializer=TabPersonSerializer(persons, context={'matrimony_id':logged_matrimony_id},many=True)                         
