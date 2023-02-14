@@ -1655,12 +1655,25 @@ class HomeTabs(APIView):
         elif _q=="saw":
             view_profile=person.viewedprofile_set.filter(preference=person.preference).order_by('updated_date')
             if view_profile.exists():
-                query=query & Q(id__in= view_profile.values_list('view__id',flat=True))
+                #query=query & Q(id__in= view_profile.values_list('view__id',flat=True))
+                viewed_list=[]
+                for i in view_profile.values_list('view__id',flat=True):
+                    persons=Person.objects.get(id=i)
+                    serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=False)                         
+                    viewed_list.append(serializer.data)
+                return Response(viewed_list,status=200)
             else:
                 return Response([],status=200)
         elif _q=="viewed":
+            viewed_list=[]
             view_profile=ViewedProfile.objects.filter(view=person,preference=person.preference).order_by('updated_date')
-            query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
+            #query=query & Q(id__in=view_profile.values_list('profile__id',flat=True))
+            
+            for i in view_profile.values_list('profile__id',flat=True):
+                persons=Person.objects.get(id=i)
+                serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=False)                         
+                viewed_list.append(serializer.data)
+            return Response(viewed_list,status=200)
            
         elif _q=="location":
             
@@ -1781,29 +1794,10 @@ class HomeTabs(APIView):
                 collect_profiles.append({"id":pro.id,"name":pro.name,"percentage":updated_code})
         
             sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
-            #print(sorted_list)
+           
             custom=[]
             for i in [i['id'] for i in sorted_list ]:
-                # pro=Person.objects.get(id=i)
-                # print(pro.query)
-                # images=pro.profilemultiimage_set.all()
-            #     custom[pro.id]={
-            #         "matrimony_id":pro.matrimony_id,
-            #         "profileimage":[{"image":img.files.url if img.files else None for img in images}],
-            #         "height":pro.height,
-            #         "dateofbirth":pro.dateofbirth,
-            #         "gender":pro.gender,
-            #         "name":pro.name,
-            #         "occupation" :pro.occupation,
-            #         "city":pro.city,
-            #         "state":pro.state,
-            #         "country":pro.country,
-            #         "qualification":pro.qualification ,
-            #         "active_plan":pro.active_plan,
-                    
-            #     }  
-            #     custom[pro.id].update(connect_status(person.matrimony_id,pro.matrimony_id))                      
-            # return Response(custom.values())
+                
                 persons=Person.objects.get(id=i)
                 serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=False)                         
                 custom.append(serializer.data)
