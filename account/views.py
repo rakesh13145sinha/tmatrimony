@@ -1850,7 +1850,7 @@ class HomeTabs(APIView):
             #     custom[pro.id].update(connect_status(person.matrimony_id,pro.matrimony_id))                      
             # return Response(custom.values())
                 persons=Person.objects.get(id=i)
-                serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
+                serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=False)                         
                 custom.append(serializer.data)
             return Response(custom,status=200)
 
