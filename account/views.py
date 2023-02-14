@@ -490,6 +490,8 @@ class Registration(APIView):
             request.POST._mutable=True
            
         data=request.data 
+        if "LPA" in data['annual_income']:
+            return Response({"message":"You have to remove LPA form your side"},status=400)
         annualincome=data['annual_income'].split('-')
         data['min_income']=annualincome[0]
         data['min_income']=annualincome[1]
