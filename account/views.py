@@ -1827,28 +1827,32 @@ class HomeTabs(APIView):
         
             sorted_list=sorted(collect_profiles,key=lambda i:i['percentage'],reverse=True) 
             #print(sorted_list)
-            custom={}
+            custom=[]
             for i in [i['id'] for i in sorted_list ]:
-                pro=Person.objects.get(id=i)
+                # pro=Person.objects.get(id=i)
                 # print(pro.query)
-                images=pro.profilemultiimage_set.all()
-                custom[pro.id]={
-                    "matrimony_id":pro.matrimony_id,
-                    "profileimage":[{"image":images[0].files.url if images.exists() else None}],
-                    "height":pro.height,
-                    "dateofbirth":pro.dateofbirth,
-                    "gender":pro.gender,
-                    "name":pro.name,
-                    "occupation" :pro.occupation,
-                    "city":pro.city,
-                    "state":pro.state,
-                    "country":pro.country,
-                    "qualification":pro.qualification ,
-                    "active_plan":pro.active_plan,
+                # images=pro.profilemultiimage_set.all()
+            #     custom[pro.id]={
+            #         "matrimony_id":pro.matrimony_id,
+            #         "profileimage":[{"image":img.files.url if img.files else None for img in images}],
+            #         "height":pro.height,
+            #         "dateofbirth":pro.dateofbirth,
+            #         "gender":pro.gender,
+            #         "name":pro.name,
+            #         "occupation" :pro.occupation,
+            #         "city":pro.city,
+            #         "state":pro.state,
+            #         "country":pro.country,
+            #         "qualification":pro.qualification ,
+            #         "active_plan":pro.active_plan,
                     
-                }  
-                custom[pro.id].update(connect_status(person.matrimony_id,pro.matrimony_id))                      
-            return Response(custom.values())
+            #     }  
+            #     custom[pro.id].update(connect_status(person.matrimony_id,pro.matrimony_id))                      
+            # return Response(custom.values())
+                persons=Person.objects.get(id=i)
+                serializer=TabPersonSerializer(persons, context={'matrimony_id':matrimonyid},many=True)                         
+                custom.append(serializer.data)
+            return Response(custom,status=200)
 
             
        
