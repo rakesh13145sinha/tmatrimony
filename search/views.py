@@ -229,12 +229,8 @@ def search_test(request):
     
      
     response={}
-    
-    #print(query)
-   
-    # r_profile=Person.objects.filter(reduce(operator.and_, q_list))
     r_profile=Person.objects.filter(query).only('id').order_by('-reg_date')
-    #print(r_profile)
+    
     for r_pro in r_profile:
        
         response[r_pro.id]={

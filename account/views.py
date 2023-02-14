@@ -490,7 +490,11 @@ class Registration(APIView):
             request.POST._mutable=True
            
         data=request.data 
-
+        annualincome=data['annual_income'].split('-')
+        data['min_income']=annualincome[0]
+        data['min_income']=annualincome[1]
+        
+        
         serializers=PersonSerializers(data=data)
         print("====================")
         print(data)
@@ -1220,8 +1224,9 @@ class SendFriendRequest(APIView):
            
         except Exception as e:
             return Response({"message":"Invalid matrimony id","error":str(e)},status=400)
+        
         if sender.gender==receiver.gender:
-            return Response({"message":"Both id belongs to same gender","error":str(e)},status=400)
+            return Response({"message":"Both id belongs to same gender"},status=200)
         
         query=Q(
             profile__matrimony_id=matrimonyid,
@@ -1330,8 +1335,7 @@ class ReceivedFriendRequest(APIView):
             try:
                 instance=Person.objects.get(id=sender.self_profile.id)
                 serializer=GenderSerializer(instance,many=False).data
-                # serializer['connect_status']=""
-                # serializer['connectid']=sender.id
+                
                 serializer['table']=2
                 serializer['request_id']=sender.id
                 serializer['notify']=sender.update_field_name
