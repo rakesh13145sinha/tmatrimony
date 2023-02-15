@@ -17,41 +17,22 @@ from django.contrib import admin
 from django.urls import path,include,re_path
 from django.conf import settings
 from django.conf.urls.static import static
-#from django.views.static import serve
 
 
-#if settings.DEBUG:
+
 
 urlpatterns = [
-    
-    path('api/v1/',
-            include([
-                path('account/',include('account.urls')),
-                path('plan/',include('Plan.urls')),
-                path('vendor/',include('Eventmanagement.urls')),
-                path('search/',include('search.urls')),
-                path('connect/',include('connect.urls')),
-                path('admin/',include('adminuser.urls'))
-            ])
-        )
-]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-# else:
-    
-    
-#     urlpatterns = [
-       
-#         path('api/v1/',
-#                 include([
-#                     path('account/',include('account.urls')),
-#                     path('plan/',include('Plan.urls')),
-#                     path('vendor/',include('Eventmanagement.urls')),
-#                     path('search/',include('search.urls')),
-#                     path('connect/',include('connect.urls')),
-#                     path('tradition/admin/',include('adminuser.urls'))
-#                 ])
-#             )
-#     ]
-    
-    
-    
-    #re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+        
+        path('api/v1/',
+                include([
+                    path('account/',include('account.urls')),
+                    path('plan/',include('Plan.urls')),
+                    path('vendor/',include('Eventmanagement.urls')),
+                    path('search/',include('search.urls')),
+                    path('connect/',include('connect.urls')),
+                    path('admin/',include('adminuser.urls')),
+                    path('user/admin/', admin.site.urls),
+                ])
+            )
+    ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
