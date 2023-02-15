@@ -1138,7 +1138,7 @@ class ProfileUpdatePercentage(APIView):
         images=ProfileMultiImage.objects.select_related('profile').filter(profile__matrimony_id=matrimonyid)
       
         if images:
-            count=count+1
+            pass
         else:
             count=count-1
         
