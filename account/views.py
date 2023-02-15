@@ -1134,7 +1134,7 @@ class ProfileUpdatePercentage(APIView):
         
         _list=['user_id' ,'id','reg_date','reg_update','plan_taken_date','plan_expiry_date' ,
                'total_access','active_plan','verify' ,'block','gender' ,'phone_number',
-               'status','matrimony_id','preference']
+               'status','matrimony_id','preference','min_income','max_income']
         for i in _list:
             del change_into_dict[i]
         count=len( list (filter(lambda x:x!=None,change_into_dict.values())))

@@ -81,7 +81,7 @@ def search_test(request):
             }
     
     #base filter query
-    query=~Q(gender=profile.gender,status=False )
+    #query=~Q(gender=profile.gender,status=False )
     #gender=~Q(gender=profile.gender,status=False )
     
 
@@ -100,7 +100,7 @@ def search_test(request):
                 )
                 
                
-                
+         
                 
                
             
@@ -223,6 +223,8 @@ def search_test(request):
     
 
     print(data)
+    
+       
     persons=Person.objects.filter(query).only('id').order_by('-reg_update')
         
     serializer=TabPersonSerializer(persons, context={'matrimony_id':logged_matrimony_id},many=True)                         

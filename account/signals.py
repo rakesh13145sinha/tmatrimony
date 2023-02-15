@@ -1,8 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Person,Partner_Preferences,SaveOTP
-# from .send_otp import sending_otp
-# import random
+
 from account.commanfunc import get_age
 
 
@@ -27,20 +26,12 @@ def create_partner_preferance(pk):
 
 def generate_matrimonyid():
 
-    clients=Person.objects.all().order_by('id')
+    clients=Person.objects.order_by('-id')[0:2]
     
-    length=len(clients)
-    #client=client.latest("id")
-    # print(client.id)
-    if length >= 2:
-    
-        new_matrimonyid="DM"+str(int(clients[length-2].matrimony_id[2:])+1)
-        
-        return new_matrimonyid
+    if clients.count() >= 2:
+        return  "DM"+str(int(clients[1].matrimony_id[2:])+1)
     else:
-        pattern=102023
-        new_id="DM"+str(pattern+1)
-        return new_id
+        return "DM"+str(102023+1)
     
     
 
