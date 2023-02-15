@@ -20,37 +20,37 @@ from django.conf.urls.static import static
 #from django.views.static import serve
 
 
-if settings.DEBUG:
+#if settings.DEBUG:
 
-    urlpatterns = [
-        
-        path('api/v1/',
-                include([
-                    path('account/',include('account.urls')),
-                    path('plan/',include('Plan.urls')),
-                    path('vendor/',include('Eventmanagement.urls')),
-                    path('search/',include('search.urls')),
-                    path('connect/',include('connect.urls')),
-                    path('tradition/admin/',include('adminuser.urls'))
-                ])
-            )
-    ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
+urlpatterns = [
+    
+    path('api/v1/',
+            include([
+                path('account/',include('account.urls')),
+                path('plan/',include('Plan.urls')),
+                path('vendor/',include('Eventmanagement.urls')),
+                path('search/',include('search.urls')),
+                path('connect/',include('connect.urls')),
+                path('admin/',include('adminuser.urls'))
+            ])
+        )
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# else:
     
     
-    urlpatterns = [
+#     urlpatterns = [
        
-        path('api/v1/',
-                include([
-                    path('account/',include('account.urls')),
-                    path('plan/',include('Plan.urls')),
-                    path('vendor/',include('Eventmanagement.urls')),
-                    path('search/',include('search.urls')),
-                    path('connect/',include('connect.urls')),
-                    path('tradition/admin/',include('adminuser.urls'))
-                ])
-            )
-    ]
+#         path('api/v1/',
+#                 include([
+#                     path('account/',include('account.urls')),
+#                     path('plan/',include('Plan.urls')),
+#                     path('vendor/',include('Eventmanagement.urls')),
+#                     path('search/',include('search.urls')),
+#                     path('connect/',include('connect.urls')),
+#                     path('tradition/admin/',include('adminuser.urls'))
+#                 ])
+#             )
+#     ]
     
     
     
