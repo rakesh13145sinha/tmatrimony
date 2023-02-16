@@ -363,7 +363,7 @@ class PersonReligion(APIView):
                 response={
                     "result":query,
                     "caste":[{"name":caste} for caste in Buddhist],
-                    "region":[{"name":re} for re in Buddhists]
+                    "region":[{"name":re} for re in Buddhist]
                     
                 }
                 return Response(response,status=200)  
