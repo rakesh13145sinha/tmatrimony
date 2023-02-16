@@ -26,8 +26,7 @@ from .send_otp import *
 from .serializers import *
 
 
-def connection(**kwargs):
-    return kwargs
+
 """UPLOAD BANNER IMAGE"""
 class Banner(APIView):
     def get(self,request):
@@ -1454,6 +1453,7 @@ def view_phone_nunmber(request):
     
     
     today_date=datetime.datetime.today().date()  
+    
     phone_status=ViewedPhoneNumberStatus(logged_profile,request_profile)
     check_today_viewed=logged_profile.viewphonnumber_set.filter(add_date=today_date)
     
@@ -1461,28 +1461,26 @@ def view_phone_nunmber(request):
         return Response({"message":"Allready add this profile in your Id",
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
-    elif check_today_viewed:
-        return Response({"message":"Allready finish today qota",
-                            "total_access":logged_profile.total_access,
-                            "status":False},status=200)
-         
-    else:
-        if int(logged_profile.total_access)>=1:
-            
-            try:
-                ViewPhonNumber.objects.get(profile=logged_profile,view=request_profile.id)
-            except Exception as e:
-                ViewPhonNumber.objects \
-                .create(profile=logged_profile,view=request_profile.id,add_date=today_date)
-            
-            logged_profile.total_access=str(int(logged_profile.total_access)-1)
-            logged_profile.save()
-            return Response({"message":"total access updated",
+    elif logged_profile.active_plan=="Trial":
+        if check_today_viewed:
+            return Response({"message":"Allready finish today qota",
                                 "total_access":logged_profile.total_access,
                                 "status":False},status=200)
-        else:
-            return Response({"message":"Need to recharge your plan",
-                                "total_access":logged_profile.total_access,
+        
+     
+    if int(logged_profile.total_access)>=1:
+        
+        ViewPhonNumber.objects \
+            .create(profile=logged_profile,view=request_profile.id,add_date=today_date)
+        
+        logged_profile.total_access=str(int(logged_profile.total_access)-1)
+        logged_profile.save()
+        return Response({"message":"total access updated",
+                            "total_access":logged_profile.total_access,
+                            "status":False},status=200)
+    else:
+        return Response({"message":"Need to recharge your plan",
+                            "total_access":logged_profile.total_access,
                                 "status":False},status=200)
             
 
