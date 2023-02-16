@@ -1467,22 +1467,22 @@ def view_phone_nunmber(request):
                                 "total_access":logged_profile.total_access,
                                 "status":False},status=200)
         
-     
-    if int(logged_profile.total_access)>=1:
-        
-        ViewPhonNumber.objects \
-            .create(profile=logged_profile,view=request_profile.id,add_date=today_date)
-        
-        logged_profile.total_access=str(int(logged_profile.total_access)-1)
-        logged_profile.save()
-        return Response({"message":"total access updated",
-                            "total_access":logged_profile.total_access,
-                            "status":False},status=200)
     else:
-        return Response({"message":"Need to recharge your plan",
-                            "total_access":logged_profile.total_access,
-                                "status":False},status=200)
+        if int(logged_profile.total_access)>=1:
             
+            ViewPhonNumber.objects \
+                .create(profile=logged_profile,view=request_profile.id,add_date=today_date)
+            
+            logged_profile.total_access=str(int(logged_profile.total_access)-1)
+            logged_profile.save()
+            return Response({"message":"total access updated",
+                                "total_access":logged_profile.total_access,
+                                "status":False},status=200)
+        else:
+            return Response({"message":"Need to recharge your plan",
+                                "total_access":logged_profile.total_access,
+                                    "status":False},status=200)
+                
 
 
 
