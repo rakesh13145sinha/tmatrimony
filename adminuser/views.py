@@ -19,10 +19,10 @@ def dashboard(request):
 
 @api_view(['GET'])
 def gender(request):
-    profiles=Person.objects.filter(gender=request.GET['gender']).only('id')
+    profiles=Person.objects.filter(gender=request.GET['gender']).only('id').order_by('-id')
     response={}
     for pro in profiles:
-        images=pro.profilemultiimage_set.all()
+        images=pro.profilemultiimage_set.filter(files__isnull=False)
         response[pro.id]={
             "id":pro.id,
             "matrimony_id":pro.matrimony_id,
