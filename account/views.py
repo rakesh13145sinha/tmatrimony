@@ -1451,15 +1451,24 @@ def view_phone_nunmber(request):
         return Response({"message":"Invalid matrimony id","errors":str(e)},status=400)
     if logged_profile.gender==request_profile.gender:
         return Response({"message":"both are same gender"},status=200)
-       
+    
+    
+    today_date=datetime.datetime.today().date()  
     phone_status=ViewedPhoneNumberStatus(logged_profile,request_profile)
+    check_today_viewed=logged_profile.viewphonnumber_set.filter(add_date=today_date)
+    
     if phone_status:
         return Response({"message":"Allready add this profile in your Id",
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
+    elif check_today_viewed:
+        Response({"message":"Allready finish today qota",
+                            "total_access":logged_profile.total_access,
+                            "status":False},status=200)
+         
     else:
         if int(logged_profile.total_access)>=1:
-            today_date=datetime.datetime.today().date()
+            
             try:
                 ViewPhonNumber.objects.get(profile=logged_profile,view=request_profile.id)
             except Exception as e:
