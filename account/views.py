@@ -1462,7 +1462,7 @@ def view_phone_nunmber(request):
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
     elif check_today_viewed:
-        Response({"message":"Allready finish today qota",
+        return Response({"message":"Allready finish today qota",
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
          
