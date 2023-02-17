@@ -61,12 +61,13 @@ def document_upload_view(request):
     profiles=Person.objects.filter(id__in=who_upload_docs)
     
     for profile in profiles:
-        doc=profile.documentupload_set.values("name_of_document","status")
-            
+        doc_with_status=profile.documentupload_set.values("name_of_document","status")
+        with_out_status=profile.documentupload_set.values("name_of_document")
         response[profile.id]={
             "matrimony_id":profile.matrimony_id,
             "name":profile.name,
-            "docs":doc
+            "docs":doc_with_status,
+            "document":with_out_status.keys()
         }
         
     return Response(response.values())
