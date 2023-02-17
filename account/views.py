@@ -1455,15 +1455,15 @@ def view_phone_nunmber(request):
     today_date=datetime.datetime.today().date()  
     
     phone_status=ViewedPhoneNumberStatus(logged_profile,request_profile)
-    check_today_viewed=logged_profile.viewphonnumber_set.filter(add_date=today_date)
+    
     
     if phone_status:
         return Response({"message":"Allready add this profile in your Id",
                             "total_access":logged_profile.total_access,
                             "status":False},status=200)
-    elif logged_profile.active_plan=="Trial":
-        if check_today_viewed:
-            return Response({"message":"Allready finish today qota",
+    elif logged_profile.plan_expiry_date ==today_date:
+       
+        return Response({"message":"Your plan have been expired",
                                 "total_access":logged_profile.total_access,
                                 "status":False},status=200)
         
@@ -1643,7 +1643,7 @@ class HomeTabs(APIView):
             elif person.preference=="community":
                 query=query & Q(caste=person.caste,religion=person.religion)
                 print(">>>>>>>community")
-            query=query & Q(reg_date__gte=interval_time)
+            query=query & Q(reg_update__gte=interval_time)
         
         elif _q=="premium":
             if person.preference=="region":
