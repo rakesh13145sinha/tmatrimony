@@ -61,7 +61,7 @@ def document_upload_view(request):
     profiles=Person.objects.filter(id__in=who_upload_docs)
     
     for profile in profiles:
-        doc=profile.documentupload_set.values("name_of_document","status","created_date")
+        doc=profile.documentupload_set.values("name_of_document","status","created_date","profile__name","profile__matrimony_id")
             
         response[profile.id]={
             "matrimony_id":profile.matrimony_id,
