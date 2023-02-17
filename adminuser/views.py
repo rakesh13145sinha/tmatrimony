@@ -6,6 +6,7 @@ from django.db.models import Count,Q
 
 
 from adminuser.serializers import AdminPersonSerializer
+from connect.models import DocumentUpload
 
 # Create your views here.
 @api_view(['GET'])
@@ -51,6 +52,25 @@ def profile(request):
 def search(request):
     profile=Person.objects.values(request.GET['q']).distinct()
     return Response(profile,status=200)
+
+@api_view(['GET'])
+def document_upload_view(request):
+    
+    response={}
+    who_upload_docs=DocumentUpload.objects.values_list('profile__id',flat=True).distinct()
+    profiles=Person.objects.filter(id__in=who_upload_docs)
+    
+    for profile in profiles:
+        doc=profile.documentupload_set.values("name_of_document","status","created_date")
+            
+        response[profile.id]={
+            "matrimony_id":profile.matrimony_id,
+            "name":profile.name
+
+        }
+        response[profile.id].update(doc)
+    return Response(response.values())
+
         
 
 

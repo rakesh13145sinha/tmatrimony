@@ -1043,14 +1043,14 @@ def profile_match_percentage(request):
     #my preference
     pp=Partner_Preferences.objects.get(profile=target_profile)
     
-    _height_list=[
-    "3ft 1in","3ft2in","3ft 3in","3ft 4in","3ft 5in","3ft 6in","3ft 7in","3ft 8in","3ft 9in","3ft 10in","3ft 11in","4ft", 
-    "4ft 1in","4ft 2in","4ft 3in","4ft 4in","4ft 5in","4ft 6in","4ft 7in","4ft 8in","4ft 9in","4ft 10in","4ft 11in","5ft" , 
-    "5ft 1in","5ft 2in","5ft 3in","5ft 4in","5ft 5in","5ft 6in","5ft 7in","5ft 8in","5ft 9in","5ft 10in","5ft 11in","6ft",
-    "6ft 1in","6ft 2in","6ft 3in","6ft 4in","6ft 5in","6ft 6in","6ft 7in","6ft 8in","6ft 9in","6ft 10in","6ft 11in","7ft",
-    "7ft 1in","7ft 2in","7ft 3in","7ft 4in","7ft 5in","7ft 6in","7ft 7in","7ft 8in","7ft 9in","7ft 10in","7ft 11in","8ft"
-        
-        ]
+    _height_list=[]
+      
+    for i in range(4,8):
+        for j in range(1,13):
+            if j==12:
+                _height_list.append(str(i+1)+"ft")
+            else:
+                _height_list.append(str(i)+"ft"+" "+str(j)+"in")
     
     _index={"min_height":_height_list.index(pp.min_height),"max_height":_height_list.index(pp.max_height)}
     
