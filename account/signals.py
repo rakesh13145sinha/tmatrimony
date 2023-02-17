@@ -1,9 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from account.send_otp import sending_otp
 from .models import Person,Partner_Preferences
-
 from account.commanfunc import get_age
 
 
