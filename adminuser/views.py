@@ -65,10 +65,10 @@ def document_upload_view(request):
             
         response[profile.id]={
             "matrimony_id":profile.matrimony_id,
-            "name":profile.name
-
+            "name":profile.name,
+            "docs":doc
         }
-        response[profile.id].update(doc)
+        
     return Response(response.values())
 
         
