@@ -67,7 +67,7 @@ def document_upload_view(request):
             "matrimony_id":profile.matrimony_id,
             "name":profile.name,
             "docs":doc_with_status,
-            "document":with_out_status.keys()
+            "document":[i.keys() for i in with_out_status]
         }
         
     return Response(response.values())
